@@ -1,7 +1,7 @@
 // render.cpp
 #include "render.hpp"
 
-WindowDataContainer::WindowDataContainer(){
+WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
     // Fensterliste erstellen ### VECTOREN ###
     windows.emplace_back("Demo-Fenster 1",
@@ -47,28 +47,160 @@ WindowDataContainer::WindowDataContainer(){
 
     //Zum erstellen von dropdown fenstern z.B. A anklicken und alle Woerter die mit A beginnen aufzeigen
 
-    DropDownWindows.emplace_back("1 Drop-Fenster",        // title
-                                 "A",                     // AtoZ
-                                 "Words starting with A", // words
+    DropDownWindows.emplace_back("A",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
                                  ImVec2(50, 65),         // position
                                  ImVec2(165, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    DropDownWindows.emplace_back("2 Drop-Fenster",        // title
-                                 "B",                     // AtoZ
-                                 "Words starting with B", // words
+    DropDownWindows.emplace_back("B",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
                                  ImVec2(50, 105),         // position
                                  ImVec2(165, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    DropDownWindows.emplace_back("3 Drop-Fenster",        // title
-                                 "B",                     // AtoZ
-                                 "Words starting with B", // words
+    DropDownWindows.emplace_back("C",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
                                  ImVec2(50, 145),         // position
                                  ImVec2(165, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    DropDownWindows.emplace_back("4 Drop-Fenster",        // title
-                                 "B",                     // AtoZ
-                                 "Words starting with B", // words
+    DropDownWindows.emplace_back("D",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
                                  ImVec2(50, 185),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("E",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 225),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("F",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 265),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("G",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 305),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("H",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 345),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("I",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 385),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("J",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 425),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("K",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 465),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("L",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 505),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("M",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(50, 545),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("N",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 65),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("O",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 105),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("P",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 145),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("Q",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 185),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("R",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 225),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("S",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 265),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("T",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 305),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("U",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 345),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("V",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 385),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("W",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 425),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("X",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 465),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("Y",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 505),         // position
+                                 ImVec2(165, 25),         // size
+                                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    DropDownWindows.emplace_back("Z",        // title
+                                 "AtoZ",                     // AtoZ
+                                 "Words starting with AtoZ", // words
+                                 ImVec2(350, 545),         // position
                                  ImVec2(165, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
@@ -106,7 +238,7 @@ void RenderMenuWindow(MenuButtons &objM)
     }
 }
 //render.cpp
-void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, bool &backMenu)
+void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM)
 {
     if (objM.gameStarted)
     {
@@ -116,7 +248,7 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, bool &backMe
         ImGui::SetCursorPos(ImVec2(0, 22));
         if (ImGui::Button("Back", ImVec2(150, 35)))
         {
-            backMenu = true;
+            objM.ZurueckMenue = true;
             objM.gameStarted = false;
         };
 
@@ -133,7 +265,7 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, bool &backMe
     }
 }
 //render.cpp
-void RenderSettingWindow(SettingButtons &objS, MenuButtons &objM, bool &backMenu)
+void RenderSettingWindow(MenuButtons &objM)
 {
     if (objM.gameSettings)
     {
@@ -154,8 +286,8 @@ void RenderSettingWindow(SettingButtons &objS, MenuButtons &objM, bool &backMenu
         }
         if (ImGui::Button("Back", ImVec2(200, 50)))
         {
-            // Gameplay-Logik
-            backMenu = true;
+            // Back-Logik
+            objM.ZurueckMenue = true;
             objM.gameSettings = false;
         }
 
@@ -163,8 +295,8 @@ void RenderSettingWindow(SettingButtons &objS, MenuButtons &objM, bool &backMenu
     }
 }
 //render.cpp
-static int item_current_idx = 0; // Index des aktuell ausgewählten Items
-void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, bool &backMenu)
+
+void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM)
 {
     if (objM.gameVocables)
     {
@@ -175,7 +307,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, bool &bac
         ImGui::SetCursorPos(ImVec2(0, 22));
         if (ImGui::Button("Back", ImVec2(150, 35)))
         {
-            backMenu = true;
+            objM.ZurueckMenue = true;
             objM.gameVocables = false;
         };
         // Wenn Sie mehrere Combo-Boxen haben möchten, sollten Sie hier eine Schleife verwenden
@@ -186,13 +318,13 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, bool &bac
                 // Setzen Sie die Breite des nächsten Widgets (der Combo-Box)
                 ImGui::SetNextItemWidth(winProps.size.x); // Setzen Sie hier die gewünschte Breite
 
-            if (ImGui::BeginCombo(winProps.title.c_str(), objC.DropDownWindows[item_current_idx].title.c_str())) // Verwenden Sie das text-Feld von VocableButtons
+            if (ImGui::BeginCombo(winProps.title.c_str(), objC.DropDownWindows[objC.item_current_idx].title.c_str())) // Verwenden Sie das text-Feld von VocableButtons
             {
                 for (int n = 0; n < objC.DropDownWindows.size(); n++)
                 {
-                    bool is_selected = (item_current_idx == n);
+                    bool is_selected = (objC.item_current_idx == n);
                     if (ImGui::Selectable(objC.DropDownWindows[n].title.c_str(), is_selected))
-                        item_current_idx = n;
+                        objC.item_current_idx = n;
 
                     if (is_selected)
                         ImGui::SetItemDefaultFocus();

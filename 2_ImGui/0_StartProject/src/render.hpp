@@ -13,11 +13,12 @@ class WindowDataContainer{
 public:
 std::vector<ImGuiWindowProps> windows;
 std::vector<VocableButtons> DropDownWindows;
+int item_current_idx;
 
 WindowDataContainer();
 };
 
-struct ImGuiWindowProps
+struct ImGuiWindowProps     	    //TODO Du brauchst eine methode die da diese xD, logik für die einzelnen ingame buttons implementieren kann
 {
     std::string title;
     ImVec2 position;
@@ -30,26 +31,11 @@ struct ImGuiWindowProps
         : title(title), position(position), size(size), flags(flags), isSelected(false)
     {
     }
-    //TODO Du brauchst eine methode die da diese xD, logik für die einzelnen ingame buttons implementieren kann
+
     std::string ButtonLogic(std::string){};
 };
 
-struct MenuButtons
-{
-    bool gameStarted = false;
-    bool gameSettings = false;
-    bool gameVocables = false;
-    bool gameExit = false;
-};
-
-struct SettingButtons
-{
-    bool gameAudio = false;
-    bool gameVideo = false;
-    bool gameGame = false; // <- :D
-};
-//render.hpp
-struct VocableButtons
+struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words implementieren
 {
     std::string title;
     std::string AtoZ;
@@ -70,9 +56,21 @@ struct VocableButtons
     }
 };
 
+struct MenuButtons
+{
+    bool gameStarted = false;
+    bool gameSettings = false;
+    bool gameVocables = false;
+    bool gameExit = false;
+    bool gameAudio = false;
+    bool gameVideo = false;
+    bool gameGameplay = false;
+    bool ZurueckMenue = false;
+};
 
+//render.hpp
 void RenderMenuWindow(MenuButtons &objM);
-void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, bool &backMenu);
-void RenderSettingWindow(SettingButtons &objS, MenuButtons &objM, bool &backMenu);
-void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, bool &backMenu);
+void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM);
+void RenderSettingWindow(MenuButtons &objM);
+void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM);
 #endif // RENDER_HPP

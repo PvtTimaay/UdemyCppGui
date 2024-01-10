@@ -35,17 +35,14 @@ int main()
     ImGuiStyle &style = ImGui::GetStyle();
     style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f); // Schwarzer Hintergrund für innere Fenster
 
-    //main.cpp
-    // Fensterliste erstellen ### VECTOREN ###
-    WindowDataContainer WindowData1;
-
     //XXX Hier beginnt das Rendern des Menüs und des Spielefensters!!!
     //XXX ***       ***         ***         ***         ***         XXX//
     //XXX XXX --- XXX --- XXX --- XXX --- XXX --- XXX --- XXX --- XXX//
 
-    bool ZurueckMenue = false;
+    //main.cpp
+    // Fensterliste erstellen ### VECTOREN ###
+    WindowDataContainer WindowData1;
     MenuButtons MenuButtonsObj1;
-    SettingButtons SettingButtonsObj1;
 
     // Haupt-Render-Schleife
     while (!glfwWindowShouldClose(window))
@@ -56,15 +53,14 @@ int main()
         ImGui::NewFrame();
 
         RenderMenuWindow(MenuButtonsObj1);
-        RenderGameWindow(WindowData1, MenuButtonsObj1, ZurueckMenue);               //TODO .cpp und .hpp noch richtig implementieren
-        RenderSettingWindow(SettingButtonsObj1, MenuButtonsObj1, ZurueckMenue);
-        RenderVocableWindow(WindowData1, MenuButtonsObj1, ZurueckMenue);            //TODO .cpp und .hpp noch richtig implementieren
+        RenderGameWindow(WindowData1, MenuButtonsObj1);
+        RenderSettingWindow(MenuButtonsObj1);
+        RenderVocableWindow(WindowData1, MenuButtonsObj1);
 
         if (MenuButtonsObj1.gameExit)
         {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
-
 
         // Rendering und Events
         ImGui::Render();
