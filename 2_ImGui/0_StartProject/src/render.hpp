@@ -43,6 +43,7 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
     ImVec2 position;
     ImVec2 size;
     ImGuiWindowFlags flags;
+    bool selected;
 
 
     VocableButtons(const std::string &title,
@@ -50,8 +51,9 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
                    const std::string &words,
                    ImVec2 position,
                    ImVec2 size,
-                   ImGuiWindowFlags flags = 0)
-        : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags)
+                   ImGuiWindowFlags flags = 0,
+                   bool selected = false)
+        : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags), selected(selected)
     {
     }
 };
@@ -66,6 +68,7 @@ struct MenuButtons
     bool gameVideo = false;
     bool gameGameplay = false;
     bool ZurueckMenue = false;
+
 };
 
 //render.hpp

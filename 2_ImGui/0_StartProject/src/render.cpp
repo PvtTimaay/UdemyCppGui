@@ -1,5 +1,6 @@
 // render.cpp
 #include "render.hpp"
+#include <algorithm>
 
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
@@ -296,41 +297,34 @@ void RenderSettingWindow(MenuButtons &objM)
 }
 //render.cpp
 
-void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM)
-{
-    if (objM.gameVocables)
-    {
-        // In Ihrer Render-Schleife oder Funktion
+void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
+    if (objM.gameVocables) {
         ImGui::SetNextWindowSize(ImVec2(1280, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
         ImGui::Begin("Vokabeln");
         ImGui::SetCursorPos(ImVec2(0, 22));
-        if (ImGui::Button("Back", ImVec2(150, 35)))
-        {
+        if (ImGui::Button("Back", ImVec2(150, 35))) {
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
-        };
-        // Wenn Sie mehrere Combo-Boxen haben möchten, sollten Sie hier eine Schleife verwenden
-        // Andernfalls entfernen Sie die Schleife, um nur eine Combo Box zu erstellen
-        for (const auto &winProps : objC.DropDownWindows)
-        {
-                ImGui::SetCursorPos(winProps.position);
-                // Setzen Sie die Breite des nächsten Widgets (der Combo-Box)
-                ImGui::SetNextItemWidth(winProps.size.x); // Setzen Sie hier die gewünschte Breite
+        }
 
-            if (ImGui::BeginCombo(winProps.title.c_str(), objC.DropDownWindows[objC.item_current_idx].title.c_str())) // Verwenden Sie das text-Feld von VocableButtons
-            {
-                for (int n = 0; n < objC.DropDownWindows.size(); n++)
-                {
-                    bool is_selected = (objC.item_current_idx == n);
-                    if (ImGui::Selectable(objC.DropDownWindows[n].title.c_str(), is_selected))
-                        objC.item_current_idx = n;
+        // Iterieren Sie über jedes Dropdown-Fenster
+        for (auto &winProps : objC.DropDownWindows) {
+            ImGui::SetCursorPos(winProps.position);
+            ImGui::SetNextItemWidth(winProps.size.x);
 
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
+            if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
+                for (auto &item : objC.DropDownWindows) {
+                    ImGui::Selectable(item.title.c_str(), &item.selected);
                 }
                 ImGui::EndCombo();
             }
+
+            // Aktualisieren Sie den temporären Titel basierend auf der Anzahl der ausgewählten Elemente
+            int selectedCount = std::count_if(objC.DropDownWindows.begin(), objC.DropDownWindows.end(), [](const VocableButtons& item) {
+                return item.selected;
+            });
+            winProps.words = std::to_string(selectedCount) + " ausgewählt";
         }
 
         ImGui::End();
