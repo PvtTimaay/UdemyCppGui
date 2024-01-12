@@ -5,6 +5,8 @@
 #include "imgui.h"
 #include <string>
 #include <vector>
+#include <fstream>
+#include <iostream>
 
 
 struct ImGuiWindowProps;
@@ -44,6 +46,7 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
     ImVec2 size;
     ImGuiWindowFlags flags;
     bool selected;
+    std::vector<std::string> wordsVec; //TODO ich brauche eine methode in VocableButtons die verschiedene wörter in einem vector speichert und diese werden dann in der RenderVocableWindow in den zum objekt gehörigen drop down boxen angezeigt!
 
 
     VocableButtons(const std::string &title,
@@ -55,6 +58,9 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
                    bool selected = false)
         : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags), selected(selected)
     {
+    }
+   void addWord(const std::string& word){
+        wordsVec.push_back(word);
     }
 };
 
@@ -76,4 +82,11 @@ void RenderMenuWindow(MenuButtons &objM);
 void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM);
 void RenderSettingWindow(MenuButtons &objM);
 void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM);
+
+//hilfsfunktionen
+void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::string& filePath);
+void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec);
+
+
+
 #endif // RENDER_HPP
