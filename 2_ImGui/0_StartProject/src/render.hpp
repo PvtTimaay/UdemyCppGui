@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <fstream>
 #include <iostream>
 
@@ -46,8 +47,9 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
     ImVec2 size;
     ImGuiWindowFlags flags;
     bool selected;
+    std::unordered_map<std::string, std::string> map;
     std::vector<std::string> wordsVec; //TODO ich brauche eine methode in VocableButtons die verschiedene wörter in einem vector speichert und diese werden dann in der RenderVocableWindow in den zum objekt gehörigen drop down boxen angezeigt!
-
+    std::vector<bool> selectedStates;   // ImGui::Selected(is_selected_vector_bool)
 
     VocableButtons(const std::string &title,
                    const std::string &AtoZ,
@@ -61,6 +63,11 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
     }
    void addWord(const std::string& word){
         wordsVec.push_back(word);
+        selectedStates.push_back(false);
+    }
+    void addWordsMap(const std::string& word1, const std::string& word2)   {
+        map[word1] = word2;
+        selectedStates.push_back(false);
     }
 };
 
@@ -85,8 +92,9 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM);
 
 //hilfsfunktionen
 void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::string& filePath);
-void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec);
-
+void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<bool>& selectedStates);
+void saveWordsToFileFromMap(const std::unordered_map<std::string, std::string>& map, const std::string& file1, const std::string& file2);
+void TakeWordsFromFileToMap(const std::string& file1, const std::string& file2, std::unordered_map<std::string, std::string>& map, std::vector<bool>& selectedStates);
 
 
 #endif // RENDER_HPP

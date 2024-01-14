@@ -205,17 +205,18 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
                                  ImVec2(165, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-    for (auto &winProps : DropDownWindows)      //TODO diese den vectoren beigefügten wörter müssen jetzt noch richtig in der RenderVocableWindow eingebaut werden
+    for (auto &winProps : DropDownWindows)      //TODO diese den vectoren beigefügten wörter, müssen jetzt noch richtig in der RenderVocableWindow eingebaut werden
     {
-        winProps.addWord("Apfel");
+       // winProps.addWord("Apfel");
+        winProps.addWordsMap("Apple", "Apfel");
+        saveWordsToFileFromMap(winProps.map, winProps.title, winProps.AtoZ);
+         /*   saveWordsToFile(winProps.wordsVec, winProps.AtoZ);
+            takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.selectedStates);
+            for (size_t i = 0; i < winProps.wordsVec.size(); i++)
+            {
+                std::cout << winProps.wordsVec[i] << " ";
+            }*/
 
-        if (winProps.wordsVec.size() >= 1)
-        {
-            saveWordsToFile(winProps.wordsVec, winProps.AtoZ);
-            takeWordsFromFile(winProps.AtoZ, winProps.wordsVec);
-            std::cout << winProps.wordsVec.size() << '\n';
-            std::cout << winProps.wordsVec[1] << std::endl;
-        }
     }
 
 }
@@ -308,6 +309,7 @@ void RenderSettingWindow(MenuButtons &objM)
         ImGui::End();
     }
 }
+
 //render.cpp
 void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
     if (objM.gameVocables) {
@@ -326,20 +328,30 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
             ImGui::SetNextItemWidth(winProps.size.x);
 
 
-            if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
-                for (auto &item : objC.DropDownWindows) {
-                    if (item.AtoZ == winProps.AtoZ) {
-                    ImGui::Selectable(item.words.c_str(), &item.selected);
+if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
+    int selectedCount = 0; // Zähler für ausgewählte Elemente in dieser Kategorie
+
+    for (auto& item : objC.DropDownWindows) {
+        for (size_t i = 0; i < item.wordsVec.size(); ++i) {
+            if (item.AtoZ == winProps.AtoZ) {
+                bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false;
+
+                if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected)) {
+                    if (i < item.selectedStates.size()) {
+                        item.selectedStates[i] = isSelected;
                     }
                 }
-                ImGui::EndCombo();
+                // Aktualisieren Sie den Zähler für ausgewählte Elemente
+                if (isSelected) {
+                    selectedCount++;
+                }
             }
+        }
+    }
 
-            // Aktualisieren Sie den temporären Titel basierend auf der Anzahl der ausgewählten Elemente
-            int selectedCount = std::count_if(objC.DropDownWindows.begin(), objC.DropDownWindows.end(), [&winProps](const VocableButtons& item) {
-                return item.selected && item.AtoZ == winProps.AtoZ;
-            });
-            winProps.words = std::to_string(selectedCount) + " ausgewählt";
+    ImGui::EndCombo();
+    winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente
+}
         }
 
         ImGui::End();
@@ -360,7 +372,7 @@ void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::string
 
     outFile.close();
 }
-void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec) {
+void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<bool>& selectedStates) {
     std::ifstream inFile(filePath);
     if (!inFile) {
         std::cerr << "Fehler beim Öffnen der Datei: " << filePath << std::endl;
@@ -371,8 +383,48 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
     while (std::getline(inFile, word)) {
         if (!word.empty()) {
             wordsVec.push_back(word);
+           selectedStates.push_back(false);
         }
     }
 
     inFile.close();
+}
+
+void saveWordsToFileFromMap(const std::unordered_map<std::string, std::string>& map,
+                     const std::string& file1,
+                     const std::string& file2) {
+    std::ofstream outFile1(file1);
+    std::ofstream outFile2(file2);
+
+    if (!outFile1 || !outFile2) {
+        std::cerr << "Fehler beim Öffnen der Dateien zum Schreiben." << std::endl;
+        return;
+    }
+
+    for (const auto& pair : map) {
+        outFile1 << pair.first << std::endl;
+        outFile2 << pair.second << std::endl;
+    }
+
+    outFile1.close();
+    outFile2.close();
+}
+
+void TakeWordsFromFileToMap(const std::string& file1, const std::string& file2, std::unordered_map<std::string, std::string>& map, std::vector<bool>& selectedStates) {
+    std::ifstream inFile1(file1);
+    std::ifstream inFile2(file2);
+
+    if (!inFile1 || !inFile2) {
+        std::cerr << "Fehler beim Öffnen der Dateien." << std::endl;
+        return;
+    }
+
+    std::string word1, word2;
+    while (std::getline(inFile1, word1) && std::getline(inFile2, word2)) {
+        map[word1] = word2;
+        selectedStates.push_back(false);
+    }
+
+    inFile1.close();
+    inFile2.close();
 }
