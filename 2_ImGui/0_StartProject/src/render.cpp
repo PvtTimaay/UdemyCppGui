@@ -1,6 +1,7 @@
 // render.cpp
 #include "render.hpp"
 #include <algorithm>
+#include <sstream>
 
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
@@ -207,15 +208,14 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 
     for (auto &winProps : DropDownWindows)      //TODO diese den vectoren beigefügten wörter, müssen jetzt noch richtig in der RenderVocableWindow eingebaut werden
     {
-       // winProps.addWord("Apfel");
-        winProps.addWordsMap("Apple", "Apfel");
-        saveWordsToFileFromMap(winProps.map, winProps.title, winProps.AtoZ);
-         /*   saveWordsToFile(winProps.wordsVec, winProps.AtoZ);
-            takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.selectedStates);
+      // winProps.addWord("Apfel", "Apple");
+
+           //saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);
+           takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
                 std::cout << winProps.wordsVec[i] << " ";
-            }*/
+            }
 
     }
 
@@ -359,72 +359,100 @@ if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
 }
 
 //hilfsfunktionen
-void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::string& filePath) {
+void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath) {
     std::ofstream outFile(filePath);
     if (!outFile) {
-        std::cerr << "Fehler beim Öffnen der Datei: " << filePath << std::endl;
+        std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << std::endl;
+        return;
+    }
+    if (wordsVec.size() != wordsVecTranslate.size())
+    {
+        std::cerr << "Fehler, vectoren weisen nicht die gleiche groesse auf!" << std::endl;
         return;
     }
 
-    for (const auto& word : wordsVec) {
-        outFile << word << std::endl;
+    for (int i = 0; i < wordsVec.size(); i++) {
+        outFile << wordsVec[i] << "," << wordsVecTranslate[i] << std::endl;
     }
 
     outFile.close();
 }
-void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<bool>& selectedStates) {
+
+void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates) {
     std::ifstream inFile(filePath);
     if (!inFile) {
-        std::cerr << "Fehler beim Öffnen der Datei: " << filePath << std::endl;
+        std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << std::endl;
         return;
     }
 
-    std::string word;
-    while (std::getline(inFile, word)) {
-        if (!word.empty()) {
+    std::string line;
+    while (std::getline(inFile, line)) {
+        if (!line.empty()) {
+            std::istringstream lineStream(line);
+            std::string word, translation;
+
+            // Erstes Wort vor dem Komma
+            std::getline(lineStream, word, ',');
+
+            // Zweites Wort nach dem Komma
+            std::getline(lineStream, translation);
+
             wordsVec.push_back(word);
-           selectedStates.push_back(false);
+            wordsVecTranslate.push_back(translation);
+            selectedStates.push_back(false);
         }
+
     }
 
     inFile.close();
+
+    if (wordsVec.size() != wordsVecTranslate.size()) {
+    std::cerr << "Fehler, ungleichgrosse Vektoren: Bitte Woerter in .txt ueberpruefen" << std::endl;
+    return;
+    }
+
+    for (size_t i = 0; i < wordsVec.size(); ++i) {
+        if (wordsVec[i].empty() || wordsVecTranslate[i].empty()) {
+        std::cerr << "Fehler, leere Eintraege gefunden: Bitte Woerter in .txt ueberpruefen" << std::endl;
+        break; // Schleife abbrechen, da ein Fehler gefunden wurde
+        }
+    }
+
 }
 
-void saveWordsToFileFromMap(const std::unordered_map<std::string, std::string>& map,
-                     const std::string& file1,
-                     const std::string& file2) {
-    std::ofstream outFile1(file1);
-    std::ofstream outFile2(file2);
+void saveWordsToFileFromMap(const std::unordered_map<std::string, std::string>& map, const std::string& fileName) {
+    std::ofstream outFile1(fileName);
 
-    if (!outFile1 || !outFile2) {
-        std::cerr << "Fehler beim Öffnen der Dateien zum Schreiben." << std::endl;
+    if (!outFile1) {
+        std::cerr << "Fehler beim Öffnen der Datei zum Schreiben." << std::endl;
         return;
     }
 
     for (const auto& pair : map) {
-        outFile1 << pair.first << std::endl;
-        outFile2 << pair.second << std::endl;
+        outFile1 << pair.first << "," << pair.second << std::endl;
     }
 
     outFile1.close();
-    outFile2.close();
 }
 
-void TakeWordsFromFileToMap(const std::string& file1, const std::string& file2, std::unordered_map<std::string, std::string>& map, std::vector<bool>& selectedStates) {
-    std::ifstream inFile1(file1);
-    std::ifstream inFile2(file2);
+void TakeWordsFromFileToMap(const std::string& fileName, std::unordered_map<std::string, std::string>& map, std::vector<bool>& selectedStates) {
+     std::ifstream inFile(fileName);
+    std::string line;
 
-    if (!inFile1 || !inFile2) {
-        std::cerr << "Fehler beim Öffnen der Dateien." << std::endl;
+    if (!inFile) {
+        std::cerr << "Fehler beim Öffnen der Datei: " << fileName << std::endl;
         return;
     }
 
-    std::string word1, word2;
-    while (std::getline(inFile1, word1) && std::getline(inFile2, word2)) {
-        map[word1] = word2;
-        selectedStates.push_back(false);
+    while (std::getline(inFile, line)) {
+        std::istringstream lineStream(line);
+        std::string key, value;
+
+        if (std::getline(lineStream, key, ',') && std::getline(lineStream, value)) {
+            map[key] = value;
+            selectedStates.push_back(false);
+        }
     }
 
-    inFile1.close();
-    inFile2.close();
+    inFile.close();
 }
