@@ -321,6 +321,12 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
         }
+        ImGui::SetCursorPos(ImVec2(750, 350));
+        if (ImGui::Button("Apply", ImVec2(350, 350)))
+        {
+            /* code */
+        }
+
 
         // Iterieren Sie über jedes Dropdown-Fenster
         for (auto &winProps : objC.DropDownWindows) {
