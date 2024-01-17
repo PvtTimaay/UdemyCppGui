@@ -38,7 +38,7 @@ struct ImGuiWindowProps     	    //TODO Du brauchst eine methode die da diese xD
     std::string ButtonLogic(std::string){};
 };
 
-struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words implementieren
+struct VocableButtons
 {
     std::string title;
     std::string AtoZ;
@@ -67,10 +67,7 @@ struct VocableButtons                //TODO dropboxen bearbeiten, AtoZ & words i
         wordsVecTranslate.push_back(wordTrans);
         selectedStates.push_back(false);
     }
-    void addWordsMap(const std::string& word1, const std::string& word2)   {
-        map[word1] = word2;
-        selectedStates.push_back(false);
-    }
+
 };
 
 struct MenuButtons
@@ -83,6 +80,7 @@ struct MenuButtons
     bool gameVideo = false;
     bool gameGameplay = false;
     bool ZurueckMenue = false;
+    bool gameVocablesApplyFunc = false;
 
 };
 
@@ -95,8 +93,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM);
 //hilfsfunktionen
 void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);
 void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);
-void saveWordsToFileFromMap(const std::unordered_map<std::string, std::string>& map, const std::string& fileName);
-void TakeWordsFromFileToMap(const std::string& fileName, std::unordered_map<std::string, std::string>& map, std::vector<bool>& selectedStates);
+void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM);
 
 
 #endif // RENDER_HPP

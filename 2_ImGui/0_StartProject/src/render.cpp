@@ -324,7 +324,9 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
         ImGui::SetCursorPos(ImVec2(750, 350));
         if (ImGui::Button("Apply", ImVec2(350, 350)))
         {
-            /* code */
+            objM.gameVocablesApplyFunc = true;
+            objM.ZurueckMenue = true;
+            objM.gameVocables = false;
         }
 
 
@@ -426,39 +428,20 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
 
 }
 
-void saveWordsToFileFromMap(const std::unordered_map<std::string, std::string>& map, const std::string& fileName) {
-    std::ofstream outFile1(fileName);
+void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
+    if (objM.gameVocablesApplyFunc) {
+        std::ofstream outFileVecs("ChoosedWords.txt");
+        if (!outFileVecs) {
+            std::cerr << "Fehler beim Öffnen der Datei (ChoosedWords.txt)" << std::endl;
+            return;
+        }
 
-    if (!outFile1) {
-        std::cerr << "Fehler beim Öffnen der Datei zum Schreiben." << std::endl;
-        return;
-    }
-
-    for (const auto& pair : map) {
-        outFile1 << pair.first << "," << pair.second << std::endl;
-    }
-
-    outFile1.close();
-}
-
-void TakeWordsFromFileToMap(const std::string& fileName, std::unordered_map<std::string, std::string>& map, std::vector<bool>& selectedStates) {
-     std::ifstream inFile(fileName);
-    std::string line;
-
-    if (!inFile) {
-        std::cerr << "Fehler beim Öffnen der Datei: " << fileName << std::endl;
-        return;
-    }
-
-    while (std::getline(inFile, line)) {
-        std::istringstream lineStream(line);
-        std::string key, value;
-
-        if (std::getline(lineStream, key, ',') && std::getline(lineStream, value)) {
-            map[key] = value;
-            selectedStates.push_back(false);
+        for (auto &item : objC.DropDownWindows) {
+            for (size_t i = 0; i < item.wordsVec.size(); ++i) {
+                if (i < item.selectedStates.size() && item.selectedStates[i]) {
+                    outFileVecs << item.wordsVec[i] << "," << item.wordsVecTranslate[i] << std::endl;
+                }
+            }
         }
     }
-
-    inFile.close();
 }
