@@ -35,7 +35,7 @@ struct ImGuiWindowProps     	    //TODO Du brauchst eine methode die da diese xD
     {
     }
 
-    std::string ButtonLogic(std::string){};
+    void ButtonLogic(WindowDataContainer &objC);
 };
 
 struct VocableButtons
@@ -48,7 +48,7 @@ struct VocableButtons
     ImGuiWindowFlags flags;
     bool selected;
     std::unordered_map<std::string, std::string> map;
-    std::vector<std::string> wordsVec; //TODO ich brauche eine methode in VocableButtons die verschiedene wörter in einem vector speichert und diese werden dann in der RenderVocableWindow in den zum objekt gehörigen drop down boxen angezeigt!
+    std::vector<std::string> wordsVec;
     std::vector<std::string> wordsVecTranslate;
     std::vector<bool> selectedStates;   // ImGui::Selected(is_selected_vector_bool)
 

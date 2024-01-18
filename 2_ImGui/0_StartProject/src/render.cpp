@@ -221,6 +221,24 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 
 }
 
+void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) {  //TODO diese ButtonLogic so implementieren das alle Wörter mit selectedStates == true willkürlich an alle windows.title Elemente des Vectors übergeben werden #include<random>
+    for (auto &item : objC.DropDownWindows)
+    {
+        for (size_t i = 0; i < item.wordsVec.size(); i++)
+        {
+             if (item.selectedStates[i] == true)
+            {
+
+            }
+
+        }
+
+    }
+
+
+
+}
+
 void RenderMenuWindow(MenuButtons &objM)
 {
     // RenderMenuWindow wird nur aufgerufen, wenn das Spiel nicht gestartet ist
