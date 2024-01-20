@@ -47,7 +47,6 @@ struct VocableButtons
     ImVec2 size;
     ImGuiWindowFlags flags;
     bool selected;
-    std::unordered_map<std::string, std::string> map;
     std::vector<std::string> wordsVec;
     std::vector<std::string> wordsVecTranslate;
     std::vector<bool> selectedStates;   // ImGui::Selected(is_selected_vector_bool)
@@ -81,7 +80,7 @@ struct MenuButtons
     bool gameGameplay = false;
     bool ZurueckMenue = false;
     bool gameVocablesApplyFunc = false;
-
+    bool gameVocablesOpenAddWindow = false;
 };
 
 //render.hpp
@@ -94,6 +93,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM);
 void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);
 void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);
 void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM);
+void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons &objM);
 
 
 #endif // RENDER_HPP

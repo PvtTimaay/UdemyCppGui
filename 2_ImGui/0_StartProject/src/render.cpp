@@ -208,9 +208,13 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 
     for (auto &winProps : DropDownWindows)      //TODO diese den vectoren beigefügten wörter, müssen jetzt noch richtig in der RenderVocableWindow eingebaut werden
     {
-      // winProps.addWord("Apfel", "Apple");
+        /*winProps.addWord("Apfel", "Apple");
+        winProps.addWord("Birne", "Pear");
+        winProps.addWord("Citrone", "Lemon");
+        winProps.addWord("Dattel", "Date");
+        winProps.addWord("Erbse", "Pea");
 
-           //saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);
+           saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);*/
            takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
@@ -222,7 +226,7 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 }
 
 void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) {  //TODO diese ButtonLogic so implementieren das alle Wörter mit selectedStates == true willkürlich an alle windows.title Elemente des Vectors übergeben werden #include<random>
-    for (auto &item : objC.DropDownWindows)
+    for (auto &item : objC.DropDownWindows)                        //NOTE maybe use Stuctured Binding
     {
         for (size_t i = 0; i < item.wordsVec.size(); i++)
         {
@@ -354,30 +358,37 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
             ImGui::SetNextItemWidth(winProps.size.x);
 
 
-if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
-    int selectedCount = 0; // Zähler für ausgewählte Elemente in dieser Kategorie
+            if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
+                int selectedCount = 0; // Zähler für ausgewählte Elemente in dieser Kategorie
 
-    for (auto& item : objC.DropDownWindows) {
-        for (size_t i = 0; i < item.wordsVec.size(); ++i) {
-            if (item.AtoZ == winProps.AtoZ) {
-                bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false;
+                for (auto& item : objC.DropDownWindows) {
+                    for (size_t i = 0; i < item.wordsVec.size(); ++i) {
+                        if (item.AtoZ == winProps.AtoZ) {
+                        bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false;
 
-                if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected)) {
-                    if (i < item.selectedStates.size()) {
-                        item.selectedStates[i] = isSelected;
+                            if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected)) {
+                                if (i < item.selectedStates.size()) {
+                                item.selectedStates[i] = isSelected;
+                                }
+                            }
+                            if (isSelected) {
+                                selectedCount++; // Aktualisieren Sie den Zähler für ausgewählte Elemente
+                            }
+                        }
                     }
                 }
-                // Aktualisieren Sie den Zähler für ausgewählte Elemente
-                if (isSelected) {
-                    selectedCount++;
-                }
+                ImGui::EndCombo();
+                winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente
             }
-        }
-    }
 
-    ImGui::EndCombo();
-    winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente
-}
+            std::string buttonLabel = "<=Add" + std::to_string(&winProps - &objC.DropDownWindows[0]); // Generiert einen einzigartigen Label für jeden Button
+            ImGui::SetCursorPos(ImVec2(winProps.position.x + 200, winProps.position.y));
+            if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25))) {
+                // Logik für den Button-Klick
+                objM.gameVocablesOpenAddWindow = true;
+                // Zum Beispiel: Öffnen eines neuen Fensters, Ausführen einer Funktion, etc.
+            }
+
         }
 
         ImGui::End();
@@ -462,4 +473,16 @@ void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
             }
         }
     }
+}
+
+void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
+    if (objM.gameVocablesOpenAddWindow)
+    {
+        static char word1[128] = "";
+        //TODO Hier ein Fenster worin man Text schreiben kann
+        ImGui::Begin("Texteingabe-Fenster");
+        ImGui::InputText("Wort 1", word1, IM_ARRAYSIZE(word1));
+        ImGui::End();
+    }
+
 }

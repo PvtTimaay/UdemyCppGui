@@ -57,6 +57,7 @@ int main()
         RenderSettingWindow(MenuButtonsObj1);
         RenderVocableWindow(WindowData1, MenuButtonsObj1);
         gameVocablesApplyFunction(WindowData1, MenuButtonsObj1);
+        gameVocablesAddFunction(WindowData1, MenuButtonsObj1);
 
         if (MenuButtonsObj1.gameExit)
         {
