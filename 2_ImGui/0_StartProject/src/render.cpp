@@ -381,7 +381,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
                 winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente
             }
 
-            std::string buttonLabel = "<=Add" + std::to_string(&winProps - &objC.DropDownWindows[0]); // Generiert einen einzigartigen Label für jeden Button
+            std::string buttonLabel = "<=Add" + winProps.title; // Generiert einen einzigartigen Label für jeden Button
             ImGui::SetCursorPos(ImVec2(winProps.position.x + 200, winProps.position.y));
             if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25))) {
                 // Logik für den Button-Klick
@@ -397,7 +397,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
 
 //hilfsfunktionen
 void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath) {
-    std::ofstream outFile(filePath);
+    std::ofstream outFile(filePath, std::ios::app);
     if (!outFile) {
         std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << std::endl;
         return;
@@ -480,8 +480,29 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
     {
         static char word1[128] = "";
         //TODO Hier ein Fenster worin man Text schreiben kann
+        ImGui::SetNextWindowSize(ImVec2(450, 250));
         ImGui::Begin("Texteingabe-Fenster");
-        ImGui::InputText("Wort 1", word1, IM_ARRAYSIZE(word1));
+        ImGui::InputText("Wort,Wort", word1, IM_ARRAYSIZE(word1));
+        ImGui::SetCursorPos(ImVec2(1, 50));
+       if (ImGui::Button("Confirm", ImVec2(150, 150)))
+        {
+            for (auto &item : objC.DropDownWindows)
+            {
+                if (word1[0] == '\0')
+                {
+                    std::cout << "Fehler, Leeres Textfeld!" << std::endl;       //TODO jedes ADD fenster soll nur wörter für das tatsächliche dropdown fenster schreiben
+                    break;
+                }
+                std::string tempString1 = {word1};
+                item.addWord(tempString1, "FromAddFunction!");
+
+                std::vector<std::string> tempVecString1 = {tempString1};
+                std::vector<std::string> tempVecString2 = {"FromAddFunction!"};
+                saveWordsToFile(tempVecString1, tempVecString2, item.AtoZ);
+            }
+
+            objM.gameVocablesOpenAddWindow = false;
+        }
         ImGui::End();
     }
 
