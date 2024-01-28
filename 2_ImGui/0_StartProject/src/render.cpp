@@ -378,13 +378,14 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
                     }
                 }
                 ImGui::EndCombo();
-                winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente
+                winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente //TODO beim start des programmes sollen die werte aus dem ChoosedWords.txt hier direkt implementiert werden damit nach dem neustart schonmal ausgewählte elemente wieder angezeigt werden
             }
 
             std::string buttonLabel = "<=Add" + winProps.title; // Generiert einen einzigartigen Label für jeden Button
             ImGui::SetCursorPos(ImVec2(winProps.position.x + 200, winProps.position.y));
             if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25))) {
                 // Logik für den Button-Klick
+                winProps.selected = true;               //TODO beim verlassen des addFensters muss das dazugehoerige bool selected wieder auf false gesetzt werden
                 objM.gameVocablesOpenAddWindow = true;
                 // Zum Beispiel: Öffnen eines neuen Fensters, Ausführen einer Funktion, etc.
             }
@@ -478,29 +479,74 @@ void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
 void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
     if (objM.gameVocablesOpenAddWindow)
     {
-        static char word1[128] = "";
-        //TODO Hier ein Fenster worin man Text schreiben kann
+        static char word1[128] = "";    //TODO Hier ein Fenster worin man Text schreiben kann
+        std::string windowTitle = "Texteingabe-Fenster";
+        for (auto &item : objC.DropDownWindows) //hier wird das element im vector gesucht mit dem bool selected = true um den dazugehörigen title als FensterNamen angeben zu koennen
+        {
+            if (item.selected == true)
+            {
+                windowTitle = item.title;
+                break;
+            }
+
+        }
         ImGui::SetNextWindowSize(ImVec2(450, 250));
-        ImGui::Begin("Texteingabe-Fenster");
-        ImGui::InputText("Wort,Wort", word1, IM_ARRAYSIZE(word1));
+        ImGui::Begin(windowTitle.c_str()); //TODO hier soll der title stehen von dem angeklickten AddButton (item.selectet == true)
+        ImGui::InputText("word,word", word1, IM_ARRAYSIZE(word1)); //TODO diesem Fenster noch ein Textfeld hinzufügen worin steht das word,word gewissenhaft eingegeben werden muss weil sonst im spiel ein leeres textfeld angezeigt wird oder programmabsturz
+        ImGui::SetCursorPos(ImVec2(250, 50));
+        if(ImGui::Button("back", ImVec2(100, 50)))
+        {
+            for (auto & item : objC.DropDownWindows)
+            {
+                if (item.selected == true)
+                {
+                    item.selected = false;
+                }
+
+            }
+            objM.gameVocablesOpenAddWindow = false;
+        }
         ImGui::SetCursorPos(ImVec2(1, 50));
-       if (ImGui::Button("Confirm", ImVec2(150, 150)))
+        if (ImGui::Button("Confirm", ImVec2(150, 150)))
         {
             for (auto &item : objC.DropDownWindows)
             {
                 if (word1[0] == '\0')
                 {
-                    std::cout << "Fehler, Leeres Textfeld!" << std::endl;       //TODO jedes ADD fenster soll nur wörter für das tatsächliche dropdown fenster schreiben
+                    std::cout << "Fehler, Leeres Textfeld!" << std::endl;
+                    //TODO diese Fehlermeldung dem Benutzer anzeigen
                     break;
                 }
-                std::string tempString1 = {word1};
-                item.addWord(tempString1, "FromAddFunction!");
+                else if (item.selected == true) //schreibt nur Woerter für das angeklickte Add-Fenster!
+                {
+                    std::string inputString = {word1}; // word1 wird am Komma gesplittet um beide vectoren befüllen zu können
+                    std::istringstream stream(inputString);
+                    std::string firstWord, secondWord;
 
-                std::vector<std::string> tempVecString1 = {tempString1};
-                std::vector<std::string> tempVecString2 = {"FromAddFunction!"};
-                saveWordsToFile(tempVecString1, tempVecString2, item.AtoZ);
+                    std::getline(stream, firstWord, ',');
+                    std::getline(stream, secondWord);
+                    if (firstWord.empty() || secondWord.empty())
+                    {
+                        std::cout << "Fehler, bitte geben sie Gewissenhaft zwei Woerter getrennt durch ein Komma ein" << std::endl;
+                        //TODO diese Fehlermeldung dem Benutzer anzeigen
+                    }
+                    else
+                    {
+                        item.addWord(firstWord, secondWord);
+
+                        std::vector<std::string> tempVecString1 = {firstWord};
+                        std::vector<std::string> tempVecString2 = {secondWord};
+                        saveWordsToFile(tempVecString1, tempVecString2, item.AtoZ);
+                    }
+
+                }
+                if (item.selected == true)
+                {
+                    item.selected = false;
+                }
+
             }
-
+            std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
         }
         ImGui::End();

@@ -46,7 +46,7 @@ struct VocableButtons
     ImVec2 position;
     ImVec2 size;
     ImGuiWindowFlags flags;
-    bool selected;
+    bool selected;    // ButtonLogik fuer den button der AddFunktion setzt true wenn dieser gedrückt wird
     std::vector<std::string> wordsVec;
     std::vector<std::string> wordsVecTranslate;
     std::vector<bool> selectedStates;   // ImGui::Selected(is_selected_vector_bool)
