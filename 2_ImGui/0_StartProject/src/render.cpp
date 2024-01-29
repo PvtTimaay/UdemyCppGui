@@ -493,6 +493,39 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
         ImGui::SetNextWindowSize(ImVec2(450, 250));
         ImGui::Begin(windowTitle.c_str()); //TODO hier soll der title stehen von dem angeklickten AddButton (item.selectet == true)
         ImGui::InputText("word,word", word1, IM_ARRAYSIZE(word1)); //TODO diesem Fenster noch ein Textfeld hinzufügen worin steht das word,word gewissenhaft eingegeben werden muss weil sonst im spiel ein leeres textfeld angezeigt wird oder programmabsturz
+
+        ImGui::SetCursorPos(ImVec2(250, 175));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+        if(ImGui::Button("delete selected words", ImVec2(160, 20)))  //TODO hier sollen auch die Wörter in der datei.txt gelöscht werden
+        {
+            for (auto &winProps : objC.DropDownWindows)
+            {
+                for (size_t i = 0; i < winProps.wordsVec.size(); )
+                {
+                    if (winProps.selectedStates[i])
+                    {
+                        // Element löschen
+                        winProps.wordsVec.erase(winProps.wordsVec.begin() + i);
+                        winProps.wordsVecTranslate.erase(winProps.wordsVecTranslate.begin() + i);
+                        winProps.selectedStates.erase(winProps.selectedStates.begin() + i);
+                        // Kein i++ hier, da das nächste Element an die Stelle des gelöschten Elements rückt
+                    }
+                    else
+                    {
+                        // Nur erhöhen, wenn kein Element gelöscht wurde
+                        ++i;
+                    }
+                }
+                if (winProps.selected == true)
+                {
+                    winProps.selected = false;
+                }
+            }
+            std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
+            objM.gameVocablesOpenAddWindow = false;
+        }
+        ImGui::PopStyleColor();
+
         ImGui::SetCursorPos(ImVec2(250, 50));
         if(ImGui::Button("back", ImVec2(100, 50)))
         {
@@ -502,10 +535,11 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
                 {
                     item.selected = false;
                 }
-
             }
+            std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
         }
+
         ImGui::SetCursorPos(ImVec2(1, 50));
         if (ImGui::Button("Confirm", ImVec2(150, 150)))
         {
@@ -549,6 +583,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
         }
+
         ImGui::End();
     }
 
