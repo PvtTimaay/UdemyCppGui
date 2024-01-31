@@ -21,7 +21,7 @@ int item_current_idx;
 WindowDataContainer();
 };
 
-struct ImGuiWindowProps     	    //TODO Du brauchst eine methode die da diese xD, logik für die einzelnen ingame buttons implementieren kann
+struct ImGuiWindowProps
 {
     std::string title;
     ImVec2 position;
@@ -35,7 +35,7 @@ struct ImGuiWindowProps     	    //TODO Du brauchst eine methode die da diese xD
     {
     }
 
-    void ButtonLogic(WindowDataContainer &objC);
+    void ButtonLogic(WindowDataContainer &objC);  //TODO Du brauchst eine methode die da diese xD, logik für die einzelnen ingame buttons implementieren kann
 };
 
 struct VocableButtons
