@@ -28,7 +28,7 @@ struct ImGuiWindowProps
     ImVec2 size;
     ImGuiWindowFlags flags;
     bool isSelected;
-
+                                //TODO hier zwei std::string vectoren (und ein bool vector?) die aus der choosedWords.txt Datei beschrieben werden implementieren, für die gameButtons (Demo-Fenster 1-10)
 
     ImGuiWindowProps(const std::string &title, ImVec2 position, ImVec2 size, ImGuiWindowFlags flags = 0)
         : title(title), position(position), size(size), flags(flags), isSelected(false)
