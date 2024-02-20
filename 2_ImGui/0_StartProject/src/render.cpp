@@ -2,6 +2,7 @@
 #include "render.hpp"
 #include <algorithm>
 #include <sstream>
+#include <filesystem>
 
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
@@ -50,157 +51,157 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
     //Zum erstellen von dropdown fenstern z.B. A anklicken und alle Woerter die mit A beginnen aufzeigen
 
     DropDownWindows.emplace_back("A",        // title
-                                 "AtoZ_A",                     // AtoZ
+                                 "AtoZ_A.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 65),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("B",        // title
-                                 "AtoZ_B",                     // AtoZ
+                                 "AtoZ_B.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 105),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("C",        // title
-                                 "AtoZ_C",                     // AtoZ
+                                 "AtoZ_C.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 145),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("D",        // title
-                                 "AtoZ_D",                     // AtoZ
+                                 "AtoZ_D.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 185),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("E",        // title
-                                 "AtoZ_E",                     // AtoZ
+                                 "AtoZ_E.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 225),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("F",        // title
-                                 "AtoZ_F",                     // AtoZ
+                                 "AtoZ_F.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 265),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("G",        // title
-                                 "AtoZ_G",                     // AtoZ
+                                 "AtoZ_G.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 305),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("H",        // title
-                                 "AtoZ_H",                     // AtoZ
+                                 "AtoZ_H.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 345),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("I",        // title
-                                 "AtoZ_I",                     // AtoZ
+                                 "AtoZ_I.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 385),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("J",        // title
-                                 "AtoZ_J",                     // AtoZ
+                                 "AtoZ_J.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 425),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("K",        // title
-                                 "AtoZ_K",                     // AtoZ
+                                 "AtoZ_K.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 465),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("L",        // title
-                                 "AtoZ_L",                     // AtoZ
+                                 "AtoZ_L.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 505),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("M",        // title
-                                 "AtoZ_M",                     // AtoZ
+                                 "AtoZ_M.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(50, 545),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("N",        // title
-                                 "AtoZ_N",                     // AtoZ
+                                 "AtoZ_N.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 65),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("O",        // title
-                                 "AtoZ_O",                     // AtoZ
+                                 "AtoZ_O.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 105),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("P",        // title
-                                 "AtoZ_P",                     // AtoZ
+                                 "AtoZ_P.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 145),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("Q",        // title
-                                 "AtoZ_Q",                     // AtoZ
+                                 "AtoZ_Q.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 185),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("R",        // title
-                                 "AtoZ_R",                     // AtoZ
+                                 "AtoZ_R.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 225),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("S",        // title
-                                 "AtoZ_S",                     // AtoZ
+                                 "AtoZ_S.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 265),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("T",        // title
-                                 "AtoZ_T",                     // AtoZ
+                                 "AtoZ_T.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 305),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("U",        // title
-                                 "AtoZ_U",                     // AtoZ
+                                 "AtoZ_U.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 345),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("V",        // title
-                                 "AtoZ_V",                     // AtoZ
+                                 "AtoZ_V.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 385),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("W",        // title
-                                 "AtoZ_W",                     // AtoZ
+                                 "AtoZ_W.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 425),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("X",        // title
-                                 "AtoZ_X",                     // AtoZ
+                                 "AtoZ_X.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 465),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("Y",        // title
-                                 "AtoZ_Y",                     // AtoZ
+                                 "AtoZ_Y.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 505),         // position
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     DropDownWindows.emplace_back("Z",        // title
-                                 "AtoZ_Z",                     // AtoZ
+                                 "AtoZ_Z.txt",                     // AtoZ
                                  "Words starting with AtoZ", // words
                                  ImVec2(350, 545),         // position
                                  ImVec2(164, 25),         // size
@@ -212,9 +213,9 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
         winProps.addWord("Birne", "Pear");
         winProps.addWord("Citrone", "Lemon");
         winProps.addWord("Dattel", "Date");
-        winProps.addWord("Erbse", "Pea");
+        winProps.addWord("Erbse", "Pea");*/
 
-           saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);*/
+           //saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);
            takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
@@ -343,6 +344,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
         if (ImGui::Button("Back", ImVec2(150, 35))) {
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
+            //gameStringLoader();         // String lade Funktion hier werden die choosedWords.txt strings in die game vectoren geladen
         }
         ImGui::SetCursorPos(ImVec2(750, 350));
         if (ImGui::Button("Apply", ImVec2(350, 350)))
@@ -397,11 +399,23 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
     }
 }
 
-//hilfsfunktionen
-void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath) {
-    std::ofstream outFile(filePath, std::ios::app);
+//render.cpp
+//hilfsfunktion
+void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath)
+{
+
+    std::filesystem::path thisPath = std::filesystem::current_path();
+    thisPath /= "files";
+    thisPath /= filePath;
+
+        // Überprüfen, ob der Ordner existiert, wenn nicht, erstelle ihn
+    if (!std::filesystem::exists(thisPath.parent_path())) {
+        std::filesystem::create_directory(thisPath.parent_path());
+    }
+
+    std::ofstream outFile(thisPath, std::ios::app);
     if (!outFile) {
-        std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << std::endl;
+        std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << '\t' << thisPath << std::endl;
         return;
     }
     if (wordsVec.size() != wordsVecTranslate.size())
@@ -417,10 +431,17 @@ void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector
     outFile.close();
 }
 
-void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates) {
-    std::ifstream inFile(filePath);
+//render.cpp
+//hilfsfunktion
+void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates)
+{
+    std::filesystem::path thisPath = std::filesystem::current_path();
+    thisPath /= "files";
+    thisPath /= filePath;
+
+    std::ifstream inFile(thisPath);
     if (!inFile) {
-        std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << std::endl;
+        std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << '\t' << thisPath << std::endl;
         return;
     }
 
@@ -459,9 +480,16 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
 
 }
 
+//render.cpp
+//hilfsfunktion
 void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
     if (objM.gameVocablesApplyFunc) {
-        std::ofstream outFileVecs("ChoosedWords.txt");
+        std::filesystem::path thisPath = std::filesystem::current_path();
+        std::string filePath1 = "ChoosedWords.txt";
+        thisPath /= "files";
+        thisPath /= filePath1;
+
+        std::ofstream outFileVecs(thisPath);
         if (!outFileVecs) {
             std::cerr << "Fehler beim Öffnen der Datei (ChoosedWords.txt)" << std::endl;
             return;
@@ -477,7 +505,10 @@ void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
     }
 }
 
-void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
+//render.cpp
+//hilfsfunktion
+void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
+{
     if (objM.gameVocablesOpenAddWindow)
     {
         static char word1[128] = "";
@@ -519,7 +550,10 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
                 }
                 if (winProps.selected == true)
                 {
-                    std::ofstream outFile(winProps.AtoZ);
+                    std::filesystem::path thisPath = std::filesystem::current_path();
+                    thisPath /= "files";
+                    thisPath /= winProps.AtoZ;
+                    std::ofstream outFile(thisPath);
                     if (!outFile)
                     {
                         std::cerr << "Fehler beim Oeffnen der Datei: " << winProps.AtoZ << std::endl;
@@ -604,5 +638,12 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM) {
 
         ImGui::End();
     }
+
+}
+
+//render.cpp
+//hilfsfunktion
+void gameStringLoader(WindowDataContainer &objC)
+{
 
 }
