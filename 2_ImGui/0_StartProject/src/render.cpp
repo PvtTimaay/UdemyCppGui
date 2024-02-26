@@ -335,20 +335,22 @@ void RenderSettingWindow(MenuButtons &objM)
 }
 
 //render.cpp
-void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM) {
+void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS) {
     if (objM.gameVocables) {
         ImGui::SetNextWindowSize(ImVec2(1280, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
         ImGui::Begin("Vokabeln");
         ImGui::SetCursorPos(ImVec2(0, 22));
-        if (ImGui::Button("Back", ImVec2(150, 35))) {
+        if (ImGui::Button("Back", ImVec2(150, 35)))
+        {
+            gameStringLoader(objC, objS);         //TODO String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
-            //gameStringLoader();         // String lade Funktion hier werden die choosedWords.txt strings in die game vectoren geladen
         }
         ImGui::SetCursorPos(ImVec2(750, 350));
         if (ImGui::Button("Apply", ImVec2(350, 350)))
         {
+            gameStringLoader(objC, objS);        //TODO ""
             objM.gameVocablesApplyFunc = true;
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
@@ -643,7 +645,62 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
 
 //render.cpp
 //hilfsfunktion
-void gameStringLoader(WindowDataContainer &objC)
+void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 {
+    std::vector<std::string> tempVec {};
+    std::vector<std::string> tempVecTrans {};
+    std::filesystem::path current_path_obj = std::filesystem::current_path();
+    current_path_obj /= "files";
+    current_path_obj /= "ChoosedWords.txt";
 
+        std::ifstream inFile(current_path_obj);
+    if (!inFile)
+    {
+        std::cerr << "Fehler beim Oeffnen der Datei: " << "ChoosedWords.txt" << '\t' << current_path_obj << std::endl;
+        return;
+    }
+
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        if (!line.empty())
+        {
+            std::istringstream lineStream(line);
+            std::string word, translation;
+
+            // Erstes Wort vor dem Komma
+            std::getline(lineStream, word, ',');
+
+            // Zweites Wort nach dem Komma
+            std::getline(lineStream, translation);
+
+            tempVec.push_back(word);
+            tempVecTrans.push_back(translation);
+        }
+
+    }
+
+    inFile.close();
+
+
+     // Prüfen, ob beide Vektoren dieselbe Länge haben
+    if (tempVec.size() == tempVecTrans.size())
+    {
+
+            // Löschen der vorhandenen gameMap
+            objS.gameString.clear();
+
+            // Füllen der gameMap für jedes Fenster mit den Wörtern aus den Vektoren
+            for (size_t i = 0; i < tempVec.size(); ++i)
+            {
+                objS.gameString[tempVec[i]] = tempVecTrans[i];
+            }
+
+            // Optional: Ausgabe der gameMap für jedes Fenster zur Überprüfung
+            for (const auto &pair : objS.gameString)
+            {
+                std::cout << pair.first << " = " << pair.second << '\n';
+            }
+
+    }
 }
