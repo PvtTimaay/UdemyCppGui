@@ -92,7 +92,7 @@ struct GameString       //TODO implementiere eine neue Structur die die daten au
 
 //render.hpp
 void RenderMenuWindow(MenuButtons &objM);
-void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM);
+void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
 void RenderSettingWindow(MenuButtons &objM);
 void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
 

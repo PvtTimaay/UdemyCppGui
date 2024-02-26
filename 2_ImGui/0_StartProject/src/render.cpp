@@ -221,28 +221,15 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
             {
                 std::cout << winProps.wordsVec[i] << " ";
             }
-
     }
-
 }
 
-void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) //TODO diese ButtonLogic so implementieren das alle Wörter mit selectedStates == true willkürlich an alle windows.title Elemente des Vectors übergeben werden #include<random>
+void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) //TODO diese ButtonLogic so implementieren das alle Wörter willkürlich an alle windows.title Elemente des Vectors übergeben werden #include<random>
 {
-    for (auto &item : objC.DropDownWindows)                        //NOTE maybe use Stuctured Binding
+    for (auto &item : objC.windows)                        //NOTE maybe use Stuctured Binding
     {
-        for (size_t i = 0; i < item.wordsVec.size(); i++)
-        {
-             if (item.selectedStates[i] == true)
-            {
-
-            }
-
-        }
 
     }
-
-
-
 }
 
 void RenderMenuWindow(MenuButtons &objM)
@@ -277,7 +264,7 @@ void RenderMenuWindow(MenuButtons &objM)
     }
 }
 //render.cpp
-void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM)
+void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS)
 {
     if (objM.gameStarted)
     {
@@ -290,7 +277,7 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM)
             objM.ZurueckMenue = true;
             objM.gameStarted = false;
         };
-
+       // loadToGameFunction(objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
         for (const auto &winProps : objC.windows)
         {
             ImGui::SetCursorPos(winProps.position);
@@ -677,7 +664,6 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
             tempVec.push_back(word);
             tempVecTrans.push_back(translation);
         }
-
     }
 
     inFile.close();
@@ -695,12 +681,5 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
             {
                 objS.gameString[tempVec[i]] = tempVecTrans[i];
             }
-
-            // Optional: Ausgabe der gameMap für jedes Fenster zur Überprüfung
-            for (const auto &pair : objS.gameString)
-            {
-                std::cout << pair.first << " = " << pair.second << '\n';
-            }
-
     }
 }

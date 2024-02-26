@@ -55,7 +55,7 @@ int main()
         ImGui::NewFrame();
 
         RenderMenuWindow(MenuButtonsObj1);
-        RenderGameWindow(WindowData1, MenuButtonsObj1);
+        RenderGameWindow(WindowData1, MenuButtonsObj1, GameStringObj1);
         RenderSettingWindow(MenuButtonsObj1);
         RenderVocableWindow(WindowData1, MenuButtonsObj1, GameStringObj1);
         gameVocablesApplyFunction(WindowData1, MenuButtonsObj1);
