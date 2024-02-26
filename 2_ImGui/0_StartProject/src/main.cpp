@@ -43,6 +43,8 @@ int main()
     // Fensterliste erstellen ### VECTOREN ###
     WindowDataContainer WindowData1;
     MenuButtons MenuButtonsObj1;
+    GameString GameStringObj1; //TODO implementiere eine neue Structur die die daten aus ChoosedWords.txt in ein std::map sichert
+
 
     // Haupt-Render-Schleife
     while (!glfwWindowShouldClose(window))
@@ -55,9 +57,10 @@ int main()
         RenderMenuWindow(MenuButtonsObj1);
         RenderGameWindow(WindowData1, MenuButtonsObj1);
         RenderSettingWindow(MenuButtonsObj1);
-        RenderVocableWindow(WindowData1, MenuButtonsObj1);
+        RenderVocableWindow(WindowData1, MenuButtonsObj1, GameStringObj1);
         gameVocablesApplyFunction(WindowData1, MenuButtonsObj1);
         gameVocablesAddFunction(WindowData1, MenuButtonsObj1);
+
 
         if (MenuButtonsObj1.gameExit)
         {

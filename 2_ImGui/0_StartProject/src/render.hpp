@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <iostream>
+#include <map>
 
 
 struct ImGuiWindowProps;
@@ -28,8 +29,7 @@ struct ImGuiWindowProps
     ImVec2 size;
     ImGuiWindowFlags flags;
     bool isSelected;
-    std::vector<std::string> gamesVec;
-    std::vector<std::string> gamesVecTranslate;
+    std::vector<std::string> keyOrValue;
                                 //TODO hier zwei std::string vectoren (und ein bool vector?) die aus der choosedWords.txt Datei beschrieben werden implementieren, für die gameButtons (Demo-Fenster 1-10)
 
     ImGuiWindowProps(const std::string &title, ImVec2 position, ImVec2 size, ImGuiWindowFlags flags = 0)
@@ -85,11 +85,16 @@ struct MenuButtons
     bool gameVocablesOpenAddWindow = false;
 };
 
+struct GameString       //TODO implementiere eine neue Structur die die daten aus ChoosedWords.txt in ein std::map sichert
+{
+    std::map<std::string, std::string> gameString {};
+};
+
 //render.hpp
 void RenderMenuWindow(MenuButtons &objM);
 void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM);
 void RenderSettingWindow(MenuButtons &objM);
-void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM);
+void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
 
 //hilfsfunktionen
 void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);
@@ -97,7 +102,7 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
 //void deleteWordsInFile()
 void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM);
 void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons &objM);
-void gameStringLoader(WindowDataContainer &objC);
+void gameStringLoader(WindowDataContainer &objC, GameString &objS);
 
 
 #endif // RENDER_HPP
