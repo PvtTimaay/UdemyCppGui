@@ -13,13 +13,14 @@
 
 struct ImGuiWindowProps;
 struct VocableButtons;      // <- prototypen für class WindowDataContainer
-class WindowDataContainer{
-public:
-std::vector<ImGuiWindowProps> windows;
-std::vector<VocableButtons> DropDownWindows;
-int item_current_idx;
+class WindowDataContainer
+{
+    public:
+    std::vector<ImGuiWindowProps> windows;
+    std::vector<VocableButtons> DropDownWindows;
+    int item_current_idx;
 
-WindowDataContainer();
+    WindowDataContainer();
 };
 
 struct ImGuiWindowProps
@@ -28,12 +29,10 @@ struct ImGuiWindowProps
     ImVec2 position;
     ImVec2 size;
     ImGuiWindowFlags flags;
-    bool isSelected;
-    std::vector<std::string> keyOrValue;
-                                //TODO hier zwei std::string vectoren (und ein bool vector?) die aus der choosedWords.txt Datei beschrieben werden implementieren, für die gameButtons (Demo-Fenster 1-10)
+    bool selectedWindow1;
 
-    ImGuiWindowProps(const std::string &title, ImVec2 position, ImVec2 size, ImGuiWindowFlags flags = 0)
-        : title(title), position(position), size(size), flags(flags), isSelected(false)
+    ImGuiWindowProps(const std::string &title, ImVec2 position, ImVec2 size, ImGuiWindowFlags flags)
+        : title(title), position(position), size(size), flags(flags), selectedWindow1(false)
     {
     }
 
@@ -48,7 +47,7 @@ struct VocableButtons
     ImVec2 position;
     ImVec2 size;
     ImGuiWindowFlags flags;
-    bool selected;    // ButtonLogik fuer den button der AddFunktion setzt true wenn dieser gedrückt wird
+    bool selectedVoc1;    // ButtonLogik fuer den button der AddFunktion setzt true wenn dieser gedrückt wird
     std::vector<std::string> wordsVec;
     std::vector<std::string> wordsVecTranslate;
     std::vector<bool> selectedStates;   // ImGui::Selected(is_selected_vector_bool)
@@ -60,7 +59,7 @@ struct VocableButtons
                    ImVec2 size,
                    ImGuiWindowFlags flags = 0,
                    bool selected = false)
-        : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags), selected(selected)
+        : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags), selectedVoc1(selected)
     {
     }
    void addWord(const std::string& word, const std::string& wordTrans){
@@ -103,6 +102,7 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
 void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM);
 void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons &objM);
 void gameStringLoader(WindowDataContainer &objC, GameString &objS);
+void loadToGameFunction(WindowDataContainer &objC, GameString &objS);
 
 
 #endif // RENDER_HPP

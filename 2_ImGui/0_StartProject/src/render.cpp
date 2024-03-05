@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <sstream>
 #include <filesystem>
+#include <random>
 
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
@@ -277,7 +278,8 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
             objM.ZurueckMenue = true;
             objM.gameStarted = false;
         };
-       // loadToGameFunction(objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
+        gameStringLoader(objC, objS);
+        loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
         for (const auto &winProps : objC.windows)
         {
             ImGui::SetCursorPos(winProps.position);
@@ -377,7 +379,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             ImGui::SetCursorPos(ImVec2(winProps.position.x + 200, winProps.position.y));
             if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25))) {
                 // Logik für den Button-Klick
-                winProps.selected = true;
+                winProps.selectedVoc1 = true;
                 objM.gameVocablesOpenAddWindow = true;
                 // Zum Beispiel: Öffnen eines neuen Fensters, Ausführen einer Funktion, etc.
             }
@@ -504,7 +506,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
         std::string windowTitle = "Texteingabe-Fenster";
         for (auto &item : objC.DropDownWindows) //hier wird das element im vector gesucht mit dem bool selected = true um den dazugehörigen title als FensterNamen angeben zu koennen
         {
-            if (item.selected == true)
+            if (item.selectedVoc1 == true)
             {
                 windowTitle = item.title;
                 break;
@@ -523,7 +525,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             {
                 for (size_t i = 0; i < winProps.wordsVec.size(); )
                 {
-                    if (winProps.selectedStates[i] && winProps.selected == true)
+                    if (winProps.selectedStates[i] && winProps.selectedVoc1 == true)
                     {
                         // Element löschen
                         winProps.wordsVec.erase(winProps.wordsVec.begin() + i);
@@ -537,7 +539,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                         ++i;
                     }
                 }
-                if (winProps.selected == true)
+                if (winProps.selectedVoc1 == true)
                 {
                     std::filesystem::path thisPath = std::filesystem::current_path();
                     thisPath /= "files";
@@ -559,7 +561,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                     }
 
                     outFile.close();
-                    winProps.selected = false;
+                    winProps.selectedVoc1 = false;
                 }
             }
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
@@ -572,9 +574,9 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
         {
             for (auto & item : objC.DropDownWindows)
             {
-                if (item.selected == true)
+                if (item.selectedVoc1 == true)
                 {
-                    item.selected = false;
+                    item.selectedVoc1 = false;
                 }
             }
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
@@ -592,7 +594,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                     //TODO diese Fehlermeldung dem Benutzer anzeigen
                     break;
                 }
-                else if (item.selected == true) //schreibt nur Woerter für das angeklickte Add-Fenster!
+                else if (item.selectedVoc1 == true) //schreibt nur Woerter für das angeklickte Add-Fenster!
                 {
                     std::string inputString = {word1}; // word1 wird am Komma gesplittet um beide vectoren befüllen zu können
                     std::istringstream stream(inputString);
@@ -615,9 +617,9 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                     }
 
                 }
-                if (item.selected == true)
+                if (item.selectedVoc1 == true)
                 {
-                    item.selected = false;
+                    item.selectedVoc1 = false;
                 }
 
             }
@@ -670,7 +672,7 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 
 
      // Prüfen, ob beide Vektoren dieselbe Länge haben
-    if (tempVec.size() == tempVecTrans.size())
+    if (tempVec.size() == tempVecTrans.size() && tempVec.size() != 0)
     {
 
             // Löschen der vorhandenen gameMap
@@ -681,5 +683,31 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
             {
                 objS.gameString[tempVec[i]] = tempVecTrans[i];
             }
+    }
+}
+
+//render.cpp
+//hilfsfunktion
+void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
+{
+    auto pseudoGen = std::mt19937();
+    auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
+
+    for (int i = 0; i < 5; i++)
+    {
+        auto genIndex = dist(pseudoGen);
+        auto tempIterator = objS.gameString.begin();
+        std::advance(tempIterator, genIndex);
+
+        auto tempLambdaAccess = tempIterator->first;
+        bool tempBool = std::none_of(objC.windows.begin(), objC.windows.end(), [tempLambdaAccess](const ImGuiWindowProps &windows) {
+                            return windows.title == tempLambdaAccess;
+                        });
+        if (tempBool)
+        {
+            objC.windows[i].title = tempIterator->first;
+            objC.windows[i + 5].title = tempIterator->second;
+            objC.windows[i].selectedWindow1 = true;
+        }                                                           //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
     }
 }
