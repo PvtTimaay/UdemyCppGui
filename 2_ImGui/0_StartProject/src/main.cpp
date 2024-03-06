@@ -54,7 +54,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        RenderMenuWindow(MenuButtonsObj1);
+        RenderMenuWindow(WindowData1, MenuButtonsObj1, GameStringObj1);
         RenderGameWindow(WindowData1, MenuButtonsObj1, GameStringObj1);
         RenderSettingWindow(MenuButtonsObj1);
         RenderVocableWindow(WindowData1, MenuButtonsObj1, GameStringObj1);

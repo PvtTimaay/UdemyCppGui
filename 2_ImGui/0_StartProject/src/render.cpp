@@ -233,7 +233,7 @@ void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) //TODO diese Butto
     }
 }
 
-void RenderMenuWindow(MenuButtons &objM)
+void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS)
 {
     // RenderMenuWindow wird nur aufgerufen, wenn das Spiel nicht gestartet ist
     if (!objM.gameStarted)
@@ -244,6 +244,8 @@ void RenderMenuWindow(MenuButtons &objM)
         if (ImGui::Button("Start", ImVec2(200, 50)))
         {
             //Start-Logik
+            gameStringLoader(objC, objS);
+            loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
             objM.gameStarted = true;
         }
         if (ImGui::Button("Settings", ImVec2(200, 50)))
@@ -278,8 +280,7 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
             objM.ZurueckMenue = true;
             objM.gameStarted = false;
         };
-        gameStringLoader(objC, objS);
-        loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
+
         for (const auto &winProps : objC.windows)
         {
             ImGui::SetCursorPos(winProps.position);
@@ -332,17 +333,18 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
         ImGui::SetCursorPos(ImVec2(0, 22));
         if (ImGui::Button("Back", ImVec2(150, 35)))
         {
-            gameStringLoader(objC, objS);         //TODO String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
+            loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
         }
         ImGui::SetCursorPos(ImVec2(750, 350));
         if (ImGui::Button("Apply", ImVec2(350, 350)))
         {
-            gameStringLoader(objC, objS);        //TODO ""
             objM.gameVocablesApplyFunc = true;
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
+            gameStringLoader(objC, objS);     //TODO String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
+            loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
         }
 
 
@@ -473,8 +475,10 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
 
 //render.cpp
 //hilfsfunktion
-void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
-    if (objM.gameVocablesApplyFunc) {
+void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM)
+{
+    if (objM.gameVocablesApplyFunc)
+    {
         std::filesystem::path thisPath = std::filesystem::current_path();
         std::string filePath1 = "ChoosedWords.txt";
         thisPath /= "files";
@@ -493,6 +497,7 @@ void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM) {
                 }
             }
         }
+        objM.gameVocablesApplyFunc = false;
     }
 }
 
@@ -690,31 +695,27 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 //hilfsfunktion
 void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 {
-    auto pseudoGen = std::mt19937();
+    auto seed = std::random_device{}();
+    auto pseudoGen = std::mt19937(seed);
     auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
 
-    for (int i = 0; i < 5; i++)
+    if (objS.gameString.size() >= 5)
     {
-        auto genIndex = dist(pseudoGen);
-        auto tempIterator = objS.gameString.begin();
-        std::advance(tempIterator, genIndex);
-
-        auto tempLambdaAccess = tempIterator->first;
-        bool tempBool = std::none_of(objC.windows.begin(), objC.windows.end(), [tempLambdaAccess](const ImGuiWindowProps &windows) {
-                            return windows.title == tempLambdaAccess;
-                        });
-        if (tempBool)
+        for (int i = 0; i < 5; i++)
         {
-            objC.windows[i].title = tempIterator->first;
-            objC.windows[i + 5].title = tempIterator->second;
-            objC.windows[i].selectedWindow1 = true;
-        }   
-        else
-        {
-            auto nextGen = dist(pseudoGen);
+            auto genIndex = dist(pseudoGen);
+            auto tempIterator = objS.gameString.begin();
             std::advance(tempIterator, genIndex);
-            bool tempNextBool = std::none_of(objC.windows.begin(), objC.windows.end(), [tempLambdaAccess](const ImGuiWindowProps &windows) {
-                                    return windows.title == tempLambdaAccess;});
-        }                                                   //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
+
+            auto tempLambdaAccess = tempIterator->first;
+            bool tempBool = std::none_of(objC.windows.begin(), objC.windows.end(), [tempLambdaAccess](const ImGuiWindowProps &windows) {return windows.title == tempLambdaAccess;});
+
+            if (tempBool)
+            {
+                objC.windows[i].title = tempIterator->first;
+                objC.windows[i + 5].title = tempIterator->second;
+                objC.windows[i].selectedWindow1 = true;
+            }                                                  //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
+        }
     }
 }
