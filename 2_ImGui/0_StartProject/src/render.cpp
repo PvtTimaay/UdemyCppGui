@@ -266,6 +266,7 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         ImGui::End();
     }
 }
+
 //render.cpp
 void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS)
 {
@@ -293,6 +294,7 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         ImGui::End();
     }
 }
+
 //render.cpp
 void RenderSettingWindow(MenuButtons &objM)
 {
@@ -319,14 +321,14 @@ void RenderSettingWindow(MenuButtons &objM)
             objM.ZurueckMenue = true;
             objM.gameSettings = false;
         }
-
         ImGui::End();
     }
 }
 
 //render.cpp
 void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS) {
-    if (objM.gameVocables) {
+    if (objM.gameVocables)
+    {
         ImGui::SetNextWindowSize(ImVec2(1280, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
         ImGui::Begin("Vokabeln");
@@ -337,6 +339,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             objM.gameVocables = false;
             loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
         }
+
         ImGui::SetCursorPos(ImVec2(750, 350));
         if (ImGui::Button("Apply", ImVec2(350, 350)))
         {
@@ -347,12 +350,10 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
         }
 
-
         // Iterieren Sie über jedes Dropdown-Fenster
         for (auto &winProps : objC.DropDownWindows) {
             ImGui::SetCursorPos(winProps.position);
             ImGui::SetNextItemWidth(winProps.size.x);
-
 
             if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
                 int selectedCount = 0; // Zähler für ausgewählte Elemente in dieser Kategorie
@@ -362,11 +363,14 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
                         if (item.AtoZ == winProps.AtoZ) {
                         bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false; //TODO wenn ein Wort gelöscht wird, soll der selectedCount auch direkt aktualisiert werden
 
-                            if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected)) {
-                                if (i < item.selectedStates.size()) {
-                                item.selectedStates[i] = isSelected;
+                            if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected))
+                            {
+                                if (i < item.selectedStates.size())
+                                {
+                                    item.selectedStates[i] = isSelected;
                                 }
                             }
+
                             if (isSelected) {
                                 selectedCount++; // Aktualisieren Sie den Zähler für ausgewählte Elemente
                             }
@@ -385,9 +389,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
                 objM.gameVocablesOpenAddWindow = true;
                 // Zum Beispiel: Öffnen eines neuen Fensters, Ausführen einer Funktion, etc.
             }
-
         }
-
         ImGui::End();
     }
 }
@@ -402,7 +404,8 @@ void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector
     thisPath /= filePath;
 
         // Überprüfen, ob der Ordner existiert, wenn nicht, erstelle ihn
-    if (!std::filesystem::exists(thisPath.parent_path())) {
+    if (!std::filesystem::exists(thisPath.parent_path()))
+    {
         std::filesystem::create_directory(thisPath.parent_path());
     }
 
@@ -420,7 +423,6 @@ void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector
     for (int i = 0; i < wordsVec.size(); i++) {
         outFile << wordsVec[i] << "," << wordsVecTranslate[i] << std::endl;
     }
-
     outFile.close();
 }
 
@@ -433,7 +435,8 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
     thisPath /= filePath;
 
     std::ifstream inFile(thisPath);
-    if (!inFile) {
+    if (!inFile)
+    {
         std::cerr << "Fehler beim Oeffnen der Datei: " << filePath << '\t' << thisPath << std::endl;
         return;
     }
@@ -456,7 +459,6 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
         }
 
     }
-
     inFile.close();
 
     if (wordsVec.size() != wordsVecTranslate.size()) {
@@ -470,7 +472,6 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
         break; // Schleife abbrechen, da ein Fehler gefunden wurde
         }
     }
-
 }
 
 //render.cpp
@@ -620,21 +621,17 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                         std::vector<std::string> tempVecString2 = {secondWord};
                         saveWordsToFile(tempVecString1, tempVecString2, item.AtoZ);
                     }
-
                 }
                 if (item.selectedVoc1 == true)
                 {
                     item.selectedVoc1 = false;
                 }
-
             }
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
         }
-
         ImGui::End();
     }
-
 }
 
 //render.cpp
@@ -675,7 +672,6 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 
     inFile.close();
 
-
      // Prüfen, ob beide Vektoren dieselbe Länge haben
     if (tempVec.size() == tempVecTrans.size() && tempVec.size() != 0)
     {
@@ -695,8 +691,10 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 //hilfsfunktion
 void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 {
+    auto timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     auto seed = std::random_device{}();
-    auto pseudoGen = std::mt19937(seed);
+    auto combinedSeed = seed ^ timeSeed;
+    auto pseudoGen = std::mt19937(combinedSeed);
     auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
 
     if (objS.gameString.size() >= 5)
