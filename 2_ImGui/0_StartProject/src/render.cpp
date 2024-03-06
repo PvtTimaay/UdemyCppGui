@@ -708,6 +708,13 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
             objC.windows[i].title = tempIterator->first;
             objC.windows[i + 5].title = tempIterator->second;
             objC.windows[i].selectedWindow1 = true;
-        }                                                           //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
+        }   
+        else
+        {
+            auto nextGen = dist(pseudoGen);
+            std::advance(tempIterator, genIndex);
+            bool tempNextBool = std::none_of(objC.windows.begin(), objC.windows.end(), [tempLambdaAccess](const ImGuiWindowProps &windows) {
+                                    return windows.title == tempLambdaAccess;});
+        }                                                        //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
     }
 }
