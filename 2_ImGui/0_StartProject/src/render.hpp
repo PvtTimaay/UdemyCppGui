@@ -58,8 +58,8 @@ struct VocableButtons
                    ImVec2 position,
                    ImVec2 size,
                    ImGuiWindowFlags flags = 0,
-                   bool selected = false)
-        : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags), selectedVoc1(selected)
+                   bool selectedVoc1 = false)
+        : title(title), AtoZ(AtoZ), words(words), position(position), size(size), flags(flags), selectedVoc1(selectedVoc1)
     {
     }
    void addWord(const std::string& word, const std::string& wordTrans){

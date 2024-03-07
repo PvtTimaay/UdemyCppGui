@@ -256,6 +256,7 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         if (ImGui::Button("Vocables", ImVec2(200, 50)))
         {
             // Vokabeln-Logik
+            //TODO boolJa = true; Funktion                                         <-- TODO
             objM.gameVocables = true;
         }
         if (ImGui::Button("Exit", ImVec2(200, 50)))
@@ -351,17 +352,22 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
         }
 
         // Iterieren Sie über jedes Dropdown-Fenster
-        for (auto &winProps : objC.DropDownWindows) {
+        for (auto &winProps : objC.DropDownWindows)
+        {
             ImGui::SetCursorPos(winProps.position);
             ImGui::SetNextItemWidth(winProps.size.x);
 
-            if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str())) {
-                int selectedCount = 0; // Zähler für ausgewählte Elemente in dieser Kategorie
+            if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str()))
+            {
+                int selectedCount {}; // Zähler für ausgewählte Elemente in dieser Kategorie
 
-                for (auto& item : objC.DropDownWindows) {
-                    for (size_t i = 0; i < item.wordsVec.size(); ++i) {
-                        if (item.AtoZ == winProps.AtoZ) {
-                        bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false; //TODO wenn ein Wort gelöscht wird, soll der selectedCount auch direkt aktualisiert werden
+                for (auto& item : objC.DropDownWindows)
+                {
+                    for (size_t i = 0; i < item.wordsVec.size(); ++i)
+                    {
+                        if (item.AtoZ == winProps.AtoZ)
+                        {
+                            bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false;
 
                             if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected))
                             {
@@ -371,19 +377,21 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
                                 }
                             }
 
-                            if (isSelected) {
+                            if (isSelected)
+                            {
                                 selectedCount++; // Aktualisieren Sie den Zähler für ausgewählte Elemente
                             }
                         }
                     }
                 }
+                winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente //TODO beim start des programmes sollen die werte aus dem ChoosedWords.txt hier direkt implementiert werden damit nach dem neustart schonmal ausgewählte elemente wieder angezeigt werden boolJa = true; Funktion
                 ImGui::EndCombo();
-                winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente //TODO beim start des programmes sollen die werte aus dem ChoosedWords.txt hier direkt implementiert werden damit nach dem neustart schonmal ausgewählte elemente wieder angezeigt werden
             }
 
             std::string buttonLabel = "<=Add" + winProps.title; // Generiert einen einzigartigen Label für jeden Button
             ImGui::SetCursorPos(ImVec2(winProps.position.x + 200, winProps.position.y));
-            if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25))) {
+            if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25)))
+            {
                 // Logik für den Button-Klick
                 winProps.selectedVoc1 = true;
                 objM.gameVocablesOpenAddWindow = true;
@@ -691,7 +699,7 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 //hilfsfunktion
 void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 {
-    auto timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    auto timeSeed = std::chrono::steady_clock::now().time_since_epoch().count();
     auto seed = std::random_device{}();
     auto combinedSeed = seed ^ timeSeed;
     auto pseudoGen = std::mt19937(combinedSeed);
