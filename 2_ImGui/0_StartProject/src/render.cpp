@@ -4,6 +4,7 @@
 #include <sstream>
 #include <filesystem>
 #include <random>
+#include "json.hpp"
 
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
@@ -256,7 +257,6 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         if (ImGui::Button("Vocables", ImVec2(200, 50)))
         {
             // Vokabeln-Logik
-            //TODO boolJa = true; Funktion                                         <-- TODO
             objM.gameVocables = true;
         }
         if (ImGui::Button("Exit", ImVec2(200, 50)))
@@ -347,8 +347,9 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             objM.gameVocablesApplyFunc = true;
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
-            gameStringLoader(objC, objS);     //TODO String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
-            loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
+            gameStringLoader(objC, objS);     //NOTE String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
+            loadToGameFunction(objC, objS); //NOTE Funktion die strings aus GameString Struktur ins Spiel läd
+            parseToJsonFunc(objC);          //NOTE Alle ausgewaehlten/abgewaehlten elemente/widgets der selectable fenster in .json datei speichern
         }
 
         // Iterieren Sie über jedes Dropdown-Fenster
@@ -369,7 +370,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
                         {
                             bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false;
 
-                            if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected))
+                            if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected)) //NOTE <--hier wird bei klick aufs selectable-widget der wert &isSelected auf true/false gesetzt
                             {
                                 if (i < item.selectedStates.size())
                                 {
@@ -379,11 +380,12 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
 
                             if (isSelected)
                             {
-                                selectedCount++; // Aktualisieren Sie den Zähler für ausgewählte Elemente
+                                selectedCount++; //TODO Dieser Zaehler muss auch noch in der json datei gespeichert werden
                             }
                         }
                     }
                 }
+
                 winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente //TODO beim start des programmes sollen die werte aus dem ChoosedWords.txt hier direkt implementiert werden damit nach dem neustart schonmal ausgewählte elemente wieder angezeigt werden boolJa = true; Funktion
                 ImGui::EndCombo();
             }
@@ -580,6 +582,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             }
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
+            parseToJsonFunc(objC); //NOTE ""
         }
         ImGui::PopStyleColor();
 
@@ -637,12 +640,12 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             }
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
+            parseToJsonFunc(objC); //NOTE ""
         }
         ImGui::End();
     }
 }
 
-//render.cpp
 //hilfsfunktion
 void gameStringLoader(WindowDataContainer &objC, GameString &objS)
 {
@@ -695,7 +698,6 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS)
     }
 }
 
-//render.cpp
 //hilfsfunktion
 void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 {
@@ -724,4 +726,37 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
             }                                                  //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
         }
     }
+}
+
+//hilfsfunktion
+void parseToJsonFunc(WindowDataContainer &objC)
+{
+    auto filePath = std::filesystem::current_path();
+    filePath /= "files";
+    filePath /= "config.json";
+    auto fileDir = filePath.parent_path();
+
+    if (!std::filesystem::exists(fileDir))
+    {
+        std::filesystem::create_directory(fileDir);
+    }
+
+    nlohmann::json jArray = nlohmann::json::array();
+    for (const auto &item : objC.DropDownWindows)
+    {
+        nlohmann::json tempJson;
+        tempJson["bool_values" + item.title] = item.selectedStates;
+        jArray.push_back(tempJson);
+    }
+
+    nlohmann::json j;
+    j = jArray;
+
+    std::ofstream jsonConfigFile(filePath);
+    if (jsonConfigFile.is_open())
+    {
+    jsonConfigFile << j.dump(4);
+    }
+
+    jsonConfigFile.close();
 }
