@@ -257,6 +257,7 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         if (ImGui::Button("Vocables", ImVec2(200, 50)))
         {
             // Vokabeln-Logik
+            parseFromJsonFunc(objC);
             objM.gameVocables = true;
         }
         if (ImGui::Button("Exit", ImVec2(200, 50)))
@@ -404,7 +405,6 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
     }
 }
 
-//render.cpp
 //hilfsfunktion
 void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath)
 {
@@ -436,7 +436,6 @@ void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector
     outFile.close();
 }
 
-//render.cpp
 //hilfsfunktion
 void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates)
 {
@@ -706,6 +705,7 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
     auto combinedSeed = seed ^ timeSeed;
     auto pseudoGen = std::mt19937(combinedSeed);
     auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
+    //auto dist1 = std::uniform_int_distribution<std::size_t>(0, 4);
 
     if (objS.gameString.size() >= 5)
     {
@@ -720,9 +720,16 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 
             if (tempBool)
             {
+                //auto genIndexSecond = dist1(pseudoGen);
                 objC.windows[i].title = tempIterator->first;
-                objC.windows[i + 5].title = tempIterator->second;
                 objC.windows[i].selectedWindow1 = true;
+                objC.windows[i + 5].title = tempIterator->second;
+                objC.windows[i + 5].selectedWindow1 = true;
+                /*if (objC.windows[genIndexSecond + 5].selectedWindow1 == false)
+                {
+                    objC.windows[genIndexSecond + 5].title = tempIterator->second;
+                    objC.windows[genIndexSecond + 5].selectedWindow1 = true;
+                }*/
             }                                                  //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
         }
     }
@@ -745,7 +752,8 @@ void parseToJsonFunc(WindowDataContainer &objC)
     for (const auto &item : objC.DropDownWindows)
     {
         nlohmann::json tempJson;
-        tempJson["bool_values" + item.title] = item.selectedStates;
+        tempJson ["bool_values" + item.title] = item.selectedStates;
+        tempJson ["selectedCount"] = item.words;
         jArray.push_back(tempJson);
     }
 
@@ -755,8 +763,51 @@ void parseToJsonFunc(WindowDataContainer &objC)
     std::ofstream jsonConfigFile(filePath);
     if (jsonConfigFile.is_open())
     {
-    jsonConfigFile << j.dump(4);
+        jsonConfigFile << j.dump(4);
+        jsonConfigFile.close();
+    }
+}
+
+//hilfsfunktion
+void parseFromJsonFunc(WindowDataContainer &objC)
+{
+    auto filePath = std::filesystem::current_path();
+    filePath /= "files";
+    filePath /= "config.json";
+
+    if (!std::filesystem::exists(filePath))
+    {
+        std::cerr << "Error, not found config.json\n";
+        return;
     }
 
-    jsonConfigFile.close();
+std::ifstream tempRead(filePath);
+    if (tempRead.is_open())
+    {
+        nlohmann::json jArray;
+        tempRead >> jArray; // Lese das Array von JSON-Objekten
+
+        for (auto &item : objC.DropDownWindows)
+        {
+            std::string keyBoolArr = "bool_values" + item.title;
+            std::string keyCountString = "selectedCount";
+
+            // Suche das passende JSON-Objekt basierend auf dem Schlüssel
+            for (const auto &jObj : jArray)
+            {
+                if (jObj.contains(keyBoolArr) && jObj.contains(keyCountString))
+                {
+                    item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
+                    item.words = jObj[keyCountString].get<std::string>();
+                    break; // Breche die Suche ab, da das passende Objekt gefunden wurde
+                }
+            }
+        }
+
+        tempRead.close();
+    }
+    else
+    {
+        std::cerr << "Error opening config.json\n";
+    }
 }

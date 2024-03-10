@@ -104,6 +104,6 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons &objM);
 void gameStringLoader(WindowDataContainer &objC, GameString &objS);
 void loadToGameFunction(WindowDataContainer &objC, GameString &objS);
 void parseToJsonFunc(WindowDataContainer &objC);
-
+void parseFromJsonFunc(WindowDataContainer &objC);
 
 #endif // RENDER_HPP
