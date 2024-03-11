@@ -26,13 +26,15 @@ class WindowDataContainer
 struct ImGuiWindowProps
 {
     std::string title;
+    std::string titleClone; //NOTE <-- Ingame Button Logic Helper
     ImVec2 position;
     ImVec2 size;
     ImGuiWindowFlags flags;
     bool selectedWindow1;
+    bool selectedWindow2;
 
     ImGuiWindowProps(const std::string &title, ImVec2 position, ImVec2 size, ImGuiWindowFlags flags)
-        : title(title), position(position), size(size), flags(flags), selectedWindow1(false)
+        : title(title), titleClone(titleClone), position(position), size(size), flags(flags), selectedWindow1(false), selectedWindow2(false)
     {
     }
 
@@ -105,5 +107,6 @@ void gameStringLoader(WindowDataContainer &objC, GameString &objS);
 void loadToGameFunction(WindowDataContainer &objC, GameString &objS);
 void parseToJsonFunc(WindowDataContainer &objC);
 void parseFromJsonFunc(WindowDataContainer &objC);
+void buttonLogic(WindowDataContainer &objC, GameString &objS);
 
 #endif // RENDER_HPP

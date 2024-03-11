@@ -228,10 +228,6 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 
 void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) //TODO diese ButtonLogic so implementieren das alle Wörter willkürlich an alle windows.title Elemente des Vectors übergeben werden #include<random>
 {
-    for (auto &item : objC.windows)                        //NOTE maybe use Stuctured Binding
-    {
-
-    }
 }
 
 void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS)
@@ -284,14 +280,25 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
             objM.gameStarted = false;
         };
 
-        for (const auto &winProps : objC.windows)
+        for (auto &winProps : objC.windows)
         {
+            if (!winProps.selectedWindow2)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 0.5f)); //NOTE false
+            }
+            else
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.8f, 0.8f, 0.8f)); //NOTE true
+            }
             ImGui::SetCursorPos(winProps.position);
             if (ImGui::Button(winProps.title.c_str(), winProps.size))
             {
                 // Button-Logik
+                winProps.selectedWindow2 = !winProps.selectedWindow2;
+                buttonLogic(objC, objS);
                 //TODO Die da diese logik muss über eine methode in der struktur implementiert werden können siehe header datei!
             }
+            ImGui::PopStyleColor();
         }
         ImGui::End();
     }
@@ -810,4 +817,24 @@ std::ifstream tempRead(filePath);
     {
         std::cerr << "Error opening config.json\n";
     }
+}
+
+//hilfsfunktion
+void buttonLogic(WindowDataContainer &objC, GameString &objS)
+{
+     for (auto &item : objC.windows) //TODO <<-- hier werden nur die key gesucht aber es müssen auch die values gesucht werden aus der map
+     {
+         if (item.selectedWindow2 == true)
+         {
+             auto tempIt = objS.gameString.find(item.title);
+             if (tempIt != objS.gameString.end())
+             {
+                item.titleClone = item.title;
+             }
+         }
+         else
+         {
+             item.titleClone = "";
+         }
+     }
 }
