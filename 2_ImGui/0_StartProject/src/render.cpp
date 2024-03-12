@@ -822,19 +822,61 @@ std::ifstream tempRead(filePath);
 //hilfsfunktion
 void buttonLogic(WindowDataContainer &objC, GameString &objS)
 {
-     for (auto &item : objC.windows) //TODO <<-- hier werden nur die key gesucht aber es müssen auch die values gesucht werden aus der map
-     {
-         if (item.selectedWindow2 == true)
-         {
-             auto tempIt = objS.gameString.find(item.title);
-             if (tempIt != objS.gameString.end())
-             {
-                item.titleClone = item.title;
-             }
-         }
-         else
-         {
-             item.titleClone = "";
-         }
-     }
+    std::string tempKey {};
+    std::string tempValue {};
+    short tempCount {};
+
+    for (auto &item : objC.windows) //TODO <<-- hier werden nur die key gesucht aber es müssen auch die values gesucht werden aus der map
+    {                               //TODO <<-- absturz beim abwählen des key fensters!!!
+        if (item.selectedWindow2)
+        {
+            auto tempIt = objS.gameString.find(item.title);
+            if (tempIt != objS.gameString.end())
+            {
+               tempKey = item.title;
+               tempCount++;
+               item.titleClone = item.title;
+               std::cout << item.titleClone << "  key" << '\n';
+            }
+            else
+            {
+                bool tempBool = false;
+                for (const auto &pair : objS.gameString)
+                {
+                    if (pair.second == item.title)
+                    {
+                        tempValue = item.title;
+                        tempCount++;
+                        tempBool = true;
+                        item.titleClone = item.title;
+                        std::cout << item.titleClone << "  value" << '\n';
+                        break;
+                    }
+                }
+                if (!tempBool)
+                {
+                    item.titleClone = "";
+                    std::cout << item.titleClone << "  void" << '\n';
+                }
+            }
+        }
+        else
+        {
+            item.titleClone = ""; //NOTE <<-- setzte standartmäßig diesen string zurück wenn button nicht ausgewählt (selectedWindow2)
+        }
+    }
+    if (tempCount == 2)
+    {
+        auto tempIt2 = objS.gameString.find(tempKey);
+        if (tempIt2->second == tempValue)
+        {
+            //TODO key-value rausnehmen, neu generieren und einfügen
+            std::cout << "Hurra" << '\n';
+        }
+        else
+        {
+            //TODO key-value button abwählen weil falsches paar
+            std::cout << "Wrong or not clicked" << '\n';
+        }
+    }
 }
