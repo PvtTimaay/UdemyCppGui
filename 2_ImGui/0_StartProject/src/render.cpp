@@ -888,4 +888,11 @@ void newKeyValue(WindowDataContainer &objC, GameString &objS);
 //hilfsfunktion
 void wrongKeyValue(WindowDataContainer &objC, GameString &objS);
 {
+    for (auto &item : objC.selectedWindow2)
+    {
+        if(item.selectedWindow2)
+        {
+            item.selectedWindow2 = false;
+        }
+    }
 }
