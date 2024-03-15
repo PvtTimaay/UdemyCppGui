@@ -108,5 +108,6 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS);
 void parseToJsonFunc(WindowDataContainer &objC);
 void parseFromJsonFunc(WindowDataContainer &objC);
 void buttonLogic(WindowDataContainer &objC, GameString &objS);
-
+void newKeyValue(WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "Hurra"
+void wrongKeyValue(WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "wrong"
 #endif // RENDER_HPP
