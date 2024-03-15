@@ -880,3 +880,12 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
         }
     }
 }
+
+//hilfsfunktion
+void newKeyValue(WindowDataContainer &objC, GameString &objS);
+{
+}
+//hilfsfunktion
+void wrongKeyValue(WindowDataContainer &objC, GameString &objS);
+{
+}
