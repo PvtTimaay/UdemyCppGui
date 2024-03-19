@@ -6,6 +6,7 @@
 #include <random>
 #include "json.hpp"
 
+
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
     // Fensterliste erstellen ### VECTOREN ###
