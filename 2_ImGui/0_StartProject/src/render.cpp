@@ -6,6 +6,7 @@
 #include <random>
 #include "json.hpp"
 
+
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
     // Fensterliste erstellen ### VECTOREN ###
@@ -877,6 +878,22 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
         {
             //TODO key-value button abwählen weil falsches paar
             std::cout << "Wrong or not clicked" << '\n';
+        }
+    }
+}
+
+//hilfsfunktion
+void newKeyValue(WindowDataContainer &objC, GameString &objS);
+{
+}
+//hilfsfunktion
+void wrongKeyValue(WindowDataContainer &objC, GameString &objS);
+{
+    for (auto &item : objC.selectedWindow2)
+    {
+        if(item.selectedWindow2)
+        {
+            item.selectedWindow2 = false;
         }
     }
 }
