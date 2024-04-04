@@ -717,7 +717,7 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
     if (objS.gameString.size() >= 5)
     {
         std::cout << std::endl;
-        short count1 = 0;
+        short count1 = 0; //NOTE testing
         for (int i = 0; i < 5; i++)
         {
             auto genIndex = dist(pseudoGen);
@@ -742,13 +742,13 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
                     item.selectedWindow1 = false;
                 }
             }
-            count1++;
-            std::cout << std::boolalpha << count1 << '\t' << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 << '\t' << objC.windows[i + 5].selectedWindow1 << std::endl;
+            count1++; //NOTE testing
+            std::cout << std::boolalpha << count1 << '\t' << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 << '\t' << objC.windows[i + 5].selectedWindow1 << std::endl; //NOTE testing
         }
-        std::cout << std::endl;
-        for (int i = 0; i < 5; i++)
+        std::cout << std::endl; //NOTE testing
+        for (int i = 0; i < 5; i++) //NOTE testing
         {
-            std::cout << std::boolalpha << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 <<std::endl;
+            std::cout << std::boolalpha << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 <<std::endl; //NOTE testing
         }
     }
 }
