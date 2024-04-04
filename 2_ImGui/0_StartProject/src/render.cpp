@@ -6,7 +6,6 @@
 #include <random>
 #include "json.hpp"
 
-
 WindowDataContainer::WindowDataContainer() : item_current_idx(0){
 //main.cpp -> jetzt render.cpp
     // Fensterliste erstellen ### VECTOREN ###
@@ -717,6 +716,8 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 
     if (objS.gameString.size() >= 5)
     {
+        std::cout << std::endl;
+        short count1 = 0;
         for (int i = 0; i < 5; i++)
         {
             auto genIndex = dist(pseudoGen);
@@ -728,17 +729,26 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 
             if (tempBool)
             {
-                //auto genIndexSecond = dist1(pseudoGen);
                 objC.windows[i].title = tempIterator->first;
                 objC.windows[i].selectedWindow1 = true;
                 objC.windows[i + 5].title = tempIterator->second;
                 objC.windows[i + 5].selectedWindow1 = true;
-                /*if (objC.windows[genIndexSecond + 5].selectedWindow1 == false)
+            }
+            else
+            {
+                i = 0; //NOTE <<-- Generiert alle Fenster von vorne weil eines doppelt vorkam
+                for (auto item : objC.windows)
                 {
-                    objC.windows[genIndexSecond + 5].title = tempIterator->second;
-                    objC.windows[genIndexSecond + 5].selectedWindow1 = true;
-                }*/
-            }                                                  //TODO <- else() wenn wert zweimal vorkam soll index erneut generiert und wenns passt dann verwendet werden um alle fenster zu befüllen aber vorher prüfen ob gameString min 5 elemente lang ist
+                    item.selectedWindow1 = false;
+                }
+            }
+            count1++;
+            std::cout << std::boolalpha << count1 << '\t' << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 << '\t' << objC.windows[i + 5].selectedWindow1 << std::endl;
+        }
+        std::cout << std::endl;
+        for (int i = 0; i < 5; i++)
+        {
+            std::cout << std::boolalpha << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 <<std::endl;
         }
     }
 }
@@ -882,12 +892,12 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
     }
 }
 
-//hilfsfunktion
-void newKeyValue(WindowDataContainer &objC, GameString &objS);
+/*//hilfsfunktion
+void newKeyValue(WindowDataContainer &objC, GameString &objS)
 {
 }
 //hilfsfunktion
-void wrongKeyValue(WindowDataContainer &objC, GameString &objS);
+void wrongKeyValue(WindowDataContainer &objC, GameString &objS)
 {
     for (auto &item : objC.selectedWindow2)
     {
@@ -896,4 +906,4 @@ void wrongKeyValue(WindowDataContainer &objC, GameString &objS);
             item.selectedWindow2 = false;
         }
     }
-}
+}*/
