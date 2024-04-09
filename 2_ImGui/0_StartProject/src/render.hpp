@@ -110,4 +110,5 @@ void parseFromJsonFunc(WindowDataContainer &objC);
 void buttonLogic(WindowDataContainer &objC, GameString &objS);
 void newKeyValue(WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "Hurra"
 void wrongKeyValue(WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "wrong"
+void singleGenerator(WindowDataContainer &objC, GameString &objS); //NOTE <<-- wie loadToGameFunction, generiert aber nur für ein key/value paar
 #endif // RENDER_HPP

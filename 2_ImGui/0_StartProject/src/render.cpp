@@ -296,7 +296,6 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
                 // Button-Logik
                 winProps.selectedWindow2 = !winProps.selectedWindow2;
                 buttonLogic(objC, objS);
-                //TODO Die da diese logik muss über eine methode in der struktur implementiert werden können siehe header datei!
             }
             ImGui::PopStyleColor();
         }
@@ -883,27 +882,64 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
         {
             //TODO key-value rausnehmen, neu generieren und einfügen
             std::cout << "Hurra" << '\n';
+            newKeyValue(objC, objS);
         }
         else
         {
             //TODO key-value button abwählen weil falsches paar
             std::cout << "Wrong or not clicked" << '\n';
+            wrongKeyValue(objC, objS);
         }
     }
 }
 
-/*//hilfsfunktion
+//hilfsfunktion
 void newKeyValue(WindowDataContainer &objC, GameString &objS)
 {
+     for (auto &item : objC.windows)
+    {
+        if(item.selectedWindow2)
+        {
+            item.selectedWindow1 = false;
+            item.selectedWindow2 = false;
+            singleGenerator(objC, objS);
+        }
+    }
 }
+
 //hilfsfunktion
 void wrongKeyValue(WindowDataContainer &objC, GameString &objS)
 {
-    for (auto &item : objC.selectedWindow2)
+    for (auto &item : objC.windows)
     {
         if(item.selectedWindow2)
         {
             item.selectedWindow2 = false;
         }
     }
-}*/
+}
+
+//hilfsfunktion
+void singleGenerator(WindowDataContainer &objC, GameString &objS)
+{
+    auto timeSeed = std::chrono::steady_clock::now().time_since_epoch().count();
+    auto seed = std::random_device{}();
+    auto combinedSeed = seed ^ timeSeed;
+    auto pseudoGen = std::mt19937(combinedSeed);
+    auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
+    auto singleGetIndex = dist(pseudoGen);
+    auto singleTempIt = objS.gameString.begin();
+    std::advance(singleTempIt, singleGetIndex);
+
+    for (size_t i = 0; i <= 5; i++)                                              //TODO <<--läuft bei den ersten beiden paaren aus der range erzeugt error!!!
+    {
+        if (!objC.windows[i].selectedWindow1)
+        {
+            objC.windows[i].title = singleTempIt->first;
+            objC.windows[i].selectedWindow1 = true;
+            objC.windows[i + 5].title = singleTempIt->second;
+            objC.windows[i + 5].selectedWindow1 = true;
+            objC.windows[i + 5].selectedWindow1 = false;
+        }
+    }
+}
