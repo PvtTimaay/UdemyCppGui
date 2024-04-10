@@ -922,24 +922,37 @@ void wrongKeyValue(WindowDataContainer &objC, GameString &objS)
 //hilfsfunktion
 void singleGenerator(WindowDataContainer &objC, GameString &objS)
 {
-    auto timeSeed = std::chrono::steady_clock::now().time_since_epoch().count();
-    auto seed = std::random_device{}();
-    auto combinedSeed = seed ^ timeSeed;
-    auto pseudoGen = std::mt19937(combinedSeed);
-    auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
-    auto singleGetIndex = dist(pseudoGen);
-    auto singleTempIt = objS.gameString.begin();
-    std::advance(singleTempIt, singleGetIndex);
+    bool tempBool {};
+    std::string tempStringFirst {};
+    std::string tempStringSecond {};
+        do
+        {
+            auto timeSeed = std::chrono::steady_clock::now().time_since_epoch().count();
+            auto seed = std::random_device{}();
+            auto combinedSeed = seed ^ timeSeed;
+            auto pseudoGen = std::mt19937(combinedSeed);
+            auto dist = std::uniform_int_distribution<std::size_t>(0, objS.gameString.size() - 1);
+            auto singleGetIndex = dist(pseudoGen);
+            auto singleTempIt = objS.gameString.begin();
+            std::advance(singleTempIt, singleGetIndex);
+            auto tempLambda = singleTempIt->first;
+            tempBool = std::none_of(objC.windows.begin(), objC.windows.end(), [tempLambda](const ImGuiWindowProps &windows){return windows.title == tempLambda;});
+            if (tempBool)
+            {
+                tempStringFirst = singleTempIt->first;
+                tempStringSecond = singleTempIt->second;
+            }
+        }while (!tempBool);
 
-    for (size_t i = 0; i <= 5; i++)                                              //TODO <<--läuft bei den ersten beiden paaren aus der range erzeugt error!!!
+    for (size_t i = 0; i < 5; i++)
     {
         if (!objC.windows[i].selectedWindow1)
         {
-            objC.windows[i].title = singleTempIt->first;
+            objC.windows[i].title = tempStringFirst;
             objC.windows[i].selectedWindow1 = true;
-            objC.windows[i + 5].title = singleTempIt->second;
+            objC.windows[i + 5].title = tempStringSecond;
             objC.windows[i + 5].selectedWindow1 = true;
-            objC.windows[i + 5].selectedWindow1 = false;
+            objC.windows[i + 5].selectedWindow2 = false;
         }
     }
 }
