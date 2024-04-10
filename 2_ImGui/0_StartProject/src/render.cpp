@@ -237,7 +237,7 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
     {
         ImGui::SetNextWindowSize(ImVec2(450, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
-        ImGui::Begin("Menü");
+        ImGui::Begin("Menü", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         if (ImGui::Button("Start", ImVec2(200, 50)))
         {
             //Start-Logik
@@ -272,7 +272,7 @@ void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
     {
         ImGui::SetNextWindowSize(ImVec2(1280, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
-        ImGui::Begin("SpielFenster");
+        ImGui::Begin("SpielFenster", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         ImGui::SetCursorPos(ImVec2(0, 22));
         if (ImGui::Button("Back", ImVec2(150, 35)))
         {
@@ -310,7 +310,7 @@ void RenderSettingWindow(MenuButtons &objM)
     {
         ImGui::SetNextWindowSize(ImVec2(450, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
-        ImGui::Begin("Einstellungen");
+        ImGui::Begin("Einstellungen", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         if (ImGui::Button("Audio", ImVec2(200, 50)))
         {
             //Audio-Logik
@@ -339,7 +339,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
     {
         ImGui::SetNextWindowSize(ImVec2(1280, 720));
         ImGui::SetNextWindowPos(ImVec2(1, 1), ImGuiCond_Once);
-        ImGui::Begin("Vokabeln");
+        ImGui::Begin("Vokabeln", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         ImGui::SetCursorPos(ImVec2(0, 22));
         if (ImGui::Button("Back", ImVec2(150, 35)))
         {
@@ -730,8 +730,8 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
             {
                 objC.windows[i].title = tempIterator->first;
                 objC.windows[i].selectedWindow1 = true;
-                objC.windows[i + 5].title = tempIterator->second;
-                objC.windows[i + 5].selectedWindow1 = true;
+                objC.windows[i + 5].title = tempIterator->second;       //TODO second soll nicht immer gegenüber gesetzt werden sondern willkürlich
+                objC.windows[i + 5].selectedWindow1 = true;     //TODO second soll nicht immer gegenüber gesetzt werden sondern willkürlich
             }
             else
             {
@@ -741,13 +741,6 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
                     item.selectedWindow1 = false;
                 }
             }
-            count1++; //NOTE testing
-            std::cout << std::boolalpha << count1 << '\t' << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 << '\t' << objC.windows[i + 5].selectedWindow1 << std::endl; //NOTE testing
-        }
-        std::cout << std::endl; //NOTE testing
-        for (int i = 0; i < 5; i++) //NOTE testing
-        {
-            std::cout << std::boolalpha << objC.windows[i].title << '\t' << objC.windows[i].selectedWindow1 <<std::endl; //NOTE testing
         }
     }
 }
@@ -836,8 +829,8 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
     std::string tempValue {};
     short tempCount {};
 
-    for (auto &item : objC.windows) //TODO <<-- hier werden nur die key gesucht aber es müssen auch die values gesucht werden aus der map
-    {                               //TODO <<-- absturz beim abwählen des key fensters!!!
+    for (auto &item : objC.windows)
+    {
         if (item.selectedWindow2)
         {
             auto tempIt = objS.gameString.find(item.title);
@@ -950,9 +943,9 @@ void singleGenerator(WindowDataContainer &objC, GameString &objS)
         {
             objC.windows[i].title = tempStringFirst;
             objC.windows[i].selectedWindow1 = true;
-            objC.windows[i + 5].title = tempStringSecond;
-            objC.windows[i + 5].selectedWindow1 = true;
-            objC.windows[i + 5].selectedWindow2 = false;
+            objC.windows[i + 5].title = tempStringSecond;       //TODO second soll dort gesetzt werden wo frei ist (selectedWindow1 = false)
+            objC.windows[i + 5].selectedWindow1 = true;     //TODO second soll dort gesetzt werden wo frei ist (selectedWindow1 = false)
+            objC.windows[i + 5].selectedWindow2 = false;        //TODO second soll dort gesetzt werden wo frei ist (selectedWindow1 = false)
         }
     }
 }
