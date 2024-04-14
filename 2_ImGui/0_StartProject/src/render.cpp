@@ -242,7 +242,8 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         {
             //Start-Logik
             gameStringLoader(objC, objS);
-            loadToGameFunction(objC, objS); //TODO Funktion die strings aus GameString Struktur ins Spiel läd
+            gameWindowPosLoader(objC, objS); //NOTE shuffle die window positions der letzten 5 Elemente
+            loadToGameFunction(objC, objS); //NOTE Funktion die strings aus GameString Struktur ins Spiel läd
             objM.gameStarted = true;
         }
         if (ImGui::Button("Settings", ImVec2(200, 50)))
@@ -875,6 +876,7 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
         {
             //TODO key-value rausnehmen, neu generieren und einfügen
             std::cout << "Hurra" << '\n';
+            gameWindowPosLoader(objC, objS);
             newKeyValue(objC, objS);
         }
         else
@@ -887,7 +889,7 @@ void buttonLogic(WindowDataContainer &objC, GameString &objS)
 }
 
 //hilfsfunktion
-void newKeyValue(WindowDataContainer &objC, GameString &objS)
+void newKeyValue (WindowDataContainer &objC, GameString &objS)
 {
      for (auto &item : objC.windows)
     {
@@ -901,7 +903,7 @@ void newKeyValue(WindowDataContainer &objC, GameString &objS)
 }
 
 //hilfsfunktion
-void wrongKeyValue(WindowDataContainer &objC, GameString &objS)
+void wrongKeyValue (WindowDataContainer &objC, GameString &objS)
 {
     for (auto &item : objC.windows)
     {
@@ -913,7 +915,7 @@ void wrongKeyValue(WindowDataContainer &objC, GameString &objS)
 }
 
 //hilfsfunktion
-void singleGenerator(WindowDataContainer &objC, GameString &objS)
+void singleGenerator (WindowDataContainer &objC, GameString &objS)
 {
     bool tempBool {};
     std::string tempStringFirst {};
@@ -947,5 +949,28 @@ void singleGenerator(WindowDataContainer &objC, GameString &objS)
             objC.windows[i + 5].selectedWindow1 = true;     //TODO second soll dort gesetzt werden wo frei ist (selectedWindow1 = false)
             objC.windows[i + 5].selectedWindow2 = false;        //TODO second soll dort gesetzt werden wo frei ist (selectedWindow1 = false)
         }
+    }
+}
+
+//hilfsfunktion
+void gameWindowPosLoader (WindowDataContainer &objC, GameString &objS)
+{
+    std::vector<ImVec2> gameWindowPositions {5};
+    for (size_t i = 5; i < 10; i++) //NOTE <<-- nur die letzten 5 elemente shufflen
+    {
+        gameWindowPositions[i - 5] = objC.windows[i].position;
+    }
+    std::random_device tempDevice;
+    std::mt19937 tempTwister (tempDevice());
+    std::shuffle (gameWindowPositions.begin(), gameWindowPositions.end(), tempTwister);
+
+    for (const auto & item : gameWindowPositions) //NOTE TEST
+    {
+        std::cout << item.x << 't' << item.y << '\n'; //NOTE TEST
+    }
+
+    for (size_t j = 5; j < 10; j++)
+    {
+        objC.windows[j].position = gameWindowPositions[j - 5];
     }
 }
