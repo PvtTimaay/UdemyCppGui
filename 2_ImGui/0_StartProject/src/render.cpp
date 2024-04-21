@@ -50,7 +50,7 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
                          ImVec2(200, 75),
                          ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-    //Zum erstellen von dropdown fenstern z.B. A anklicken und alle Woerter die mit A beginnen aufzeigen
+    //NOTE Zum erstellen von dropdown fenstern z.B. A anklicken und alle Woerter die mit A beginnen aufzeigen
 
     DropDownWindows.emplace_back("A",        // title
                                  "AtoZ_A.txt",                     // AtoZ
@@ -360,6 +360,19 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             parseToJsonFunc(objC);          //NOTE Alle ausgewaehlten/abgewaehlten elemente/widgets der selectable fenster in .json datei speichern
         }
 
+        /*ImGui::SetCursorPos(ImVec2(750, 100)); //WARN #1 funktioniert nicht richtig da alle ImGui::BeginCombo aktualisiert werden müssen um selectedCount zu aktualisieren indem man sie alle einzeln anklickt
+        if (ImGui::Button(objM.vocableSelectAll.c_str(), ImVec2(100, 50))) //TODO <<-- alle elemente von allen werden ausgewaehlt, button veraendert farbe
+        {   //TODO sobald der benutzer auswaehlt, aendert button name zu "custom"
+           // objM.vocableSelectAll = "custom"; //NOTE test
+           for (auto &item : objC.DropDownWindows)
+           {
+                    for (int i = 0; i < item.wordsVec.size(); i++)
+                    {
+                        item.selectedStates[i] = true;  //TODO selectedCount wird nicht direkt mit aktualisiert, nur beim drücken der jeweiligen dropDownFenster
+                    }
+           }
+        }*/ //WARN #1 oben
+
         // Iterieren Sie über jedes Dropdown-Fenster
         for (auto &winProps : objC.DropDownWindows)
         {
@@ -368,44 +381,38 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
 
             if (ImGui::BeginCombo(winProps.title.c_str(), winProps.words.c_str()))
             {
-                int selectedCount {}; // Zähler für ausgewählte Elemente in dieser Kategorie
-
-                for (auto& item : objC.DropDownWindows)
+                int selectedCount {}; //NOTE Zähler für ausgewählte Elemente in dieser Kategorie
+                for (size_t i = 0; i < winProps.wordsVec.size(); ++i)
                 {
-                    for (size_t i = 0; i < item.wordsVec.size(); ++i)
+                    if (winProps.AtoZ == winProps.AtoZ)
                     {
-                        if (item.AtoZ == winProps.AtoZ)
+                        bool isSelected = (i < winProps.selectedStates.size()) ? winProps.selectedStates[i] : false;
+                        if (ImGui::Selectable(winProps.wordsVec[i].c_str(), &isSelected)) //NOTE <--hier wird bei klick aufs selectable-widget der wert &isSelected auf true/false gesetzt
                         {
-                            bool isSelected = (i < item.selectedStates.size()) ? item.selectedStates[i] : false;
-
-                            if (ImGui::Selectable(item.wordsVec[i].c_str(), &isSelected)) //NOTE <--hier wird bei klick aufs selectable-widget der wert &isSelected auf true/false gesetzt
+                            if (i < winProps.selectedStates.size())
                             {
-                                if (i < item.selectedStates.size())
-                                {
-                                    item.selectedStates[i] = isSelected;
-                                }
+                                winProps.selectedStates[i] = isSelected;
                             }
-
-                            if (isSelected)
-                            {
-                                selectedCount++; //TODO Dieser Zaehler muss auch noch in der json datei gespeichert werden
-                            }
+                        }
+                        if (isSelected)
+                        {
+                            selectedCount++; //NOTE Dieser Zaehler wird auch in der json datei gespeichert
                         }
                     }
                 }
 
-                winProps.words = std::to_string(selectedCount) + " ausgewählt"; // Anzeige der Anzahl ausgewählter Elemente //TODO beim start des programmes sollen die werte aus dem ChoosedWords.txt hier direkt implementiert werden damit nach dem neustart schonmal ausgewählte elemente wieder angezeigt werden boolJa = true; Funktion
+                winProps.words = std::to_string(selectedCount) + " ausgewählt"; //NOTE Anzeige der Anzahl ausgewählter Elemente
                 ImGui::EndCombo();
             }
 
-            std::string buttonLabel = "<=Add" + winProps.title; // Generiert einen einzigartigen Label für jeden Button
+            std::string buttonLabel = "<=Add" + winProps.title; //NOTE Generiert einen einzigartigen Label für jeden Button
             ImGui::SetCursorPos(ImVec2(winProps.position.x + 200, winProps.position.y));
             if (ImGui::Button(buttonLabel.c_str(), ImVec2(winProps.size.x - 100, winProps.size.y - 25)))
             {
-                // Logik für den Button-Klick
+                //NOTE Logik für den Button-Klick
                 winProps.selectedVoc1 = true;
                 objM.gameVocablesOpenAddWindow = true;
-                // Zum Beispiel: Öffnen eines neuen Fensters, Ausführen einer Funktion, etc.
+                //NOTE Zum Beispiel: Öffnen eines neuen Fensters, Ausführen einer Funktion, etc.
             }
         }
         ImGui::End();
@@ -485,7 +492,7 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
     for (size_t i = 0; i < wordsVec.size(); ++i) {
         if (wordsVec[i].empty() || wordsVecTranslate[i].empty()) {
         std::cerr << "Fehler, leere Eintraege gefunden: Bitte Woerter in .txt ueberpruefen" << std::endl;
-        break; // Schleife abbrechen, da ein Fehler gefunden wurde
+        break; //NOTE Schleife abbrechen, da ein Fehler gefunden wurde
         }
     }
 }
@@ -549,15 +556,15 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                 {
                     if (winProps.selectedStates[i] && winProps.selectedVoc1 == true)
                     {
-                        // Element löschen
+                        //NOTE Element löschen
                         winProps.wordsVec.erase(winProps.wordsVec.begin() + i);
                         winProps.wordsVecTranslate.erase(winProps.wordsVecTranslate.begin() + i);
                         winProps.selectedStates.erase(winProps.selectedStates.begin() + i);
-                        // Kein i++ hier, da das nächste Element an die Stelle des gelöschten Elements rückt
+                        //NOTE Kein i++ hier, da das nächste Element an die Stelle des gelöschten Elements rückt
                     }
                     else
                     {
-                        // Nur erhöhen, wenn kein Element gelöscht wurde
+                        //NOTE Nur erhöhen, wenn kein Element gelöscht wurde
                         ++i;
                     }
                 }
@@ -586,7 +593,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                     winProps.selectedVoc1 = false;
                 }
             }
-            std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
+            std::fill(std::begin(word1), std::end(word1), 0); //NOTE word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
             parseToJsonFunc(objC); //NOTE ""
         }
@@ -602,7 +609,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                     item.selectedVoc1 = false;
                 }
             }
-            std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
+            std::fill(std::begin(word1), std::end(word1), 0); //NOTE word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
         }
 
@@ -617,9 +624,9 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
                     //TODO diese Fehlermeldung dem Benutzer anzeigen
                     break;
                 }
-                else if (item.selectedVoc1 == true) //schreibt nur Woerter für das angeklickte Add-Fenster!
+                else if (item.selectedVoc1 == true) //NOTE schreibt nur Woerter für das angeklickte Add-Fenster!
                 {
-                    std::string inputString = {word1}; // word1 wird am Komma gesplittet um beide vectoren befüllen zu können
+                    std::string inputString = {word1}; //NOTE word1 wird am Komma gesplittet um beide vectoren befüllen zu können
                     std::istringstream stream(inputString);
                     std::string firstWord, secondWord;
 
@@ -955,7 +962,7 @@ void singleGenerator (WindowDataContainer &objC, GameString &objS)
 //hilfsfunktion
 void gameWindowPosLoader (WindowDataContainer &objC, GameString &objS)
 {
-    std::vector<ImVec2> gameWindowPositions {5};
+    std::vector<ImVec2> gameWindowPositions (5); //NOTE <<-- 5 elemente vor-allokieren und ImVec2 Standart-Konstruktor ausführen
     for (size_t i = 5; i < 10; i++) //NOTE <<-- nur die letzten 5 elemente shufflen
     {
         gameWindowPositions[i - 5] = objC.windows[i].position;
