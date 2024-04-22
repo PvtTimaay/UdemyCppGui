@@ -49,10 +49,10 @@ struct VocableButtons
     ImVec2 position;
     ImVec2 size;
     ImGuiWindowFlags flags;
-    bool selectedVoc1;    // ButtonLogik fuer den button der AddFunktion setzt true wenn dieser gedrückt wird
+    bool selectedVoc1;    //NOTE ButtonLogik fuer den button der AddFunktion setzt true wenn dieser gedrückt wird
     std::vector<std::string> wordsVec;
     std::vector<std::string> wordsVecTranslate;
-    std::vector<bool> selectedStates;   // ImGui::Selected(is_selected_vector_bool)
+    std::vector<bool> selectedStates {};  //NOTE ImGui::Selected(is_selected_vector_bool)
 
     VocableButtons(const std::string &title,
                    const std::string &AtoZ,
@@ -84,6 +84,9 @@ struct MenuButtons
     bool ZurueckMenue = false;
     bool gameVocablesApplyFunc = false;
     bool gameVocablesOpenAddWindow = false;
+
+    //Laufzeit nutzungs Variablen
+    std::string vocableSelectAll {"All"};
 };
 
 struct GameString       //TODO implementiere eine neue Structur die die daten aus ChoosedWords.txt in ein std::map sichert
@@ -92,23 +95,24 @@ struct GameString       //TODO implementiere eine neue Structur die die daten au
 };
 
 //render.hpp
-void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
-void RenderGameWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
-void RenderSettingWindow(MenuButtons &objM);
-void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
+void RenderMenuWindow (WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
+void RenderGameWindow (WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
+void RenderSettingWindow (MenuButtons &objM);
+void RenderVocableWindow (WindowDataContainer &objC, MenuButtons &objM, GameString &objS);
 
 //hilfsfunktionen
-void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);
-void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);
+void saveWordsToFile (const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);
+void takeWordsFromFile (const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);
 //void deleteWordsInFile()
-void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM);
-void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons &objM);
-void gameStringLoader(WindowDataContainer &objC, GameString &objS);
-void loadToGameFunction(WindowDataContainer &objC, GameString &objS);
-void parseToJsonFunc(WindowDataContainer &objC);
-void parseFromJsonFunc(WindowDataContainer &objC);
-void buttonLogic(WindowDataContainer &objC, GameString &objS);
-void newKeyValue(WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "Hurra"
-void wrongKeyValue(WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "wrong"
-void singleGenerator(WindowDataContainer &objC, GameString &objS); //NOTE <<-- wie loadToGameFunction, generiert aber nur für ein key/value paar
+void gameVocablesApplyFunction (WindowDataContainer& objC, MenuButtons& objM);
+void gameVocablesAddFunction (WindowDataContainer &objC, MenuButtons &objM);
+void gameStringLoader (WindowDataContainer &objC, GameString &objS);
+void loadToGameFunction (WindowDataContainer &objC, GameString &objS);
+void parseToJsonFunc (WindowDataContainer &objC);
+void parseFromJsonFunc (WindowDataContainer &objC);
+void buttonLogic (WindowDataContainer &objC, GameString &objS);
+void newKeyValue (WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "Hurra"
+void wrongKeyValue (WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "wrong"
+void singleGenerator (WindowDataContainer &objC, GameString &objS); //NOTE <<-- wie loadToGameFunction, generiert aber nur für ein key/value paar
+void gameWindowPosLoader (WindowDataContainer &objC, GameString &objS);
 #endif // RENDER_HPP

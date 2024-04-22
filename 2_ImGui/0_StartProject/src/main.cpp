@@ -13,8 +13,22 @@ int main()
     if (!glfwInit())
         return -1;
 
+        // Hole den primären Monitor
+    GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+    if (!primaryMonitor) {
+        glfwTerminate();
+        return -1;
+    }
+
+    // Hole die Video-Modus-Informationen des primären Monitors
+    const GLFWvidmode* mode = glfwGetVideoMode(primaryMonitor);
+    if (!mode) {
+        glfwTerminate();
+        return -1;
+    }
+
     // Erstellen eines GLFW-Fensters (Hauptfenster)
-    GLFWwindow *window = glfwCreateWindow(1280, 720, "ImGui + GLFW", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(mode->width, mode->height, "ImGui + GLFW", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
