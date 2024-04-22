@@ -254,6 +254,8 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         if (ImGui::Button("Vocables", ImVec2(200, 50)))
         {
             // Vokabeln-Logik
+           // takeWordsFromFile(); //NOTE so ???
+           // parseToJsonFunc(objC); //WARN <<-- setzt alle zurueck!
             parseFromJsonFunc(objC);
             objM.gameVocables = true;
         }
@@ -465,7 +467,8 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
     }
 
     std::string line;
-    while (std::getline(inFile, line)) {
+    while (std::getline(inFile, line))
+    {
         if (!line.empty()) {
             std::istringstream lineStream(line);
             std::string word, translation;
@@ -480,7 +483,6 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
             wordsVecTranslate.push_back(translation);
             selectedStates.push_back(false);
         }
-
     }
     inFile.close();
 
