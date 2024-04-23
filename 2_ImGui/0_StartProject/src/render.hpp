@@ -103,6 +103,7 @@ void RenderVocableWindow (WindowDataContainer &objC, MenuButtons &objM, GameStri
 //hilfsfunktionen
 void saveWordsToFile (const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);
 void takeWordsFromFile (const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);
+void takeWordsFromFileObject(WindowDataContainer &objC); //NOTE REFACTORY TEST!
 //void deleteWordsInFile()
 void gameVocablesApplyFunction (WindowDataContainer& objC, MenuButtons& objM);
 void gameVocablesAddFunction (WindowDataContainer &objC, MenuButtons &objM);

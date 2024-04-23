@@ -209,7 +209,7 @@ WindowDataContainer::WindowDataContainer() : item_current_idx(0){
                                  ImVec2(164, 25),         // size
                                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-    for (auto &winProps : DropDownWindows)
+for (auto &winProps : DropDownWindows)
     {
         /*winProps.addWord("Apfel", "Apple");
         winProps.addWord("Birne", "Pear");
@@ -254,8 +254,8 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         if (ImGui::Button("Vocables", ImVec2(200, 50)))
         {
             // Vokabeln-Logik
-           // takeWordsFromFile(); //NOTE so ???
-           // parseToJsonFunc(objC); //WARN <<-- setzt alle zurueck!
+           // takeWordsFromFileObject(objC); //TODO wenn man woerter manuell in die .txt eintraegt müssen diese richtig in die string vectoren und .json datei geupdatet werden
+            //parseToJsonFunc(objC); //WARN <<-- setzt alle zurueck!
             parseFromJsonFunc(objC);
             objM.gameVocables = true;
         }
@@ -452,6 +452,59 @@ void saveWordsToFile(const std::vector<std::string>& wordsVec, const std::vector
     outFile.close();
 }
 
+//hilfsfunktion
+void takeWordsFromFileObject(WindowDataContainer &objC) //NOTE REFACTORY TEST!
+{
+    std::filesystem::path thisPath = std::filesystem::current_path();
+    thisPath /= "files";
+    for (auto &item : objC.DropDownWindows)
+    {
+        std::filesystem::path tempPath = thisPath;
+        tempPath /= item.AtoZ;
+
+        std::ifstream inFile(tempPath);
+        if (!inFile)
+        {
+            std::cerr << "Fehler beim Oeffnen der Datei: " << item.AtoZ << '\t' << tempPath << '\n';
+            return;
+        }
+
+        std::string line;
+        while (std::getline(inFile, line))
+        {
+            if (!line.empty())
+            {
+                std::istringstream lineStream(line);
+                std::string word, translation;
+
+                //NOTE Erstes Wort vor dem Komma
+                std::getline(lineStream, word, ',');
+                if (!std::any_of(item.wordsVec.begin(), item.wordsVec.end(), [&word](const std::string &w){ return w == word;}))
+                {
+                         //NOTE Zweites Wort nach dem Komma
+                     std::getline(lineStream, translation);
+                     if (!std::any_of(item.wordsVecTranslate.begin(), item.wordsVecTranslate.end(), [&translation](const std::string &t){ return t == translation;}))
+                     {
+                        item.wordsVec.push_back(word);
+                        item.wordsVecTranslate.push_back(translation);
+                        item.selectedStates.push_back(false);
+                     }
+                }
+            }
+        }
+        inFile.close();
+
+        if (item.wordsVec.size() != item.wordsVecTranslate.size())
+        {
+            std::cerr << "Fehler, ungleichgrosse Vektoren: Bitte Woerter in " << item.AtoZ << ".txt ueberpruefen" << std::endl;
+            return;
+        }
+        else if (item.wordsVec.empty() || item.wordsVecTranslate.empty())
+        {
+            std::cerr << "Fehler, leere Eintraege gefunden: Bitte Woerter in " << item.AtoZ << ".txt ueberpruefen" << std::endl;
+        }
+    }
+}
 //hilfsfunktion
 void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates)
 {
