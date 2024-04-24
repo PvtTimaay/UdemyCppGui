@@ -226,10 +226,6 @@ for (auto &winProps : DropDownWindows)
     }
 }
 
-void ImGuiWindowProps::ButtonLogic(WindowDataContainer &objC) //TODO diese ButtonLogic so implementieren das alle Wörter willkürlich an alle windows.title Elemente des Vectors übergeben werden #include<random>
-{
-}
-
 void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &objS)
 {
     // RenderMenuWindow wird nur aufgerufen, wenn das Spiel nicht gestartet ist
@@ -253,10 +249,11 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         }
         if (ImGui::Button("Vocables", ImVec2(200, 50)))
         {
-            // Vokabeln-Logik
-           // takeWordsFromFileObject(objC); //TODO wenn man woerter manuell in die .txt eintraegt müssen diese richtig in die string vectoren und .json datei geupdatet werden
+            //Vokabeln-Logik
+            //takeWordsFromFileObject(objC); //TODO wenn man woerter manuell in die .txt eintraegt müssen diese richtig in die string vectoren und .json datei geupdatet werden
             //parseToJsonFunc(objC); //WARN <<-- setzt alle zurueck!
-            parseFromJsonFunc(objC);
+            parseFromJsonFunc(objC); //WARN <<-- setzt alle hier schon zurueck getestet!
+            parseToJsonFunc(objC);
             objM.gameVocables = true;
         }
         if (ImGui::Button("Exit", ImVec2(200, 50)))
@@ -866,13 +863,25 @@ std::ifstream tempRead(filePath);
             std::string keyCountString = "selectedCount";
 
             // Suche das passende JSON-Objekt basierend auf dem Schlüssel
-            for (const auto &jObj : jArray)
+            for (auto &jObj : jArray)
             {
                 if (jObj.contains(keyBoolArr) && jObj.contains(keyCountString))
                 {
-                    item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
-                    item.words = jObj[keyCountString].get<std::string>();
-                    break; // Breche die Suche ab, da das passende Objekt gefunden wurde
+                    if (item.selectedStates.size() <= jObj[keyBoolArr].get<std::vector<bool>>().size())
+                    {
+                        item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>(); //TODO <<-- item.selectedStates darf nicht verkleinert werden dadurch das config.json weniger Elemente hat als das manuell vergrößerte item.selectedStates in der .txt damit spaeter mit parseToJsonFunc geupdatet werden kann
+                        item.words = jObj[keyCountString].get<std::string>();
+                        break; // Breche die Suche ab, da das passende Objekt gefunden wurde
+                    }
+                    else //TODO wenn in der .txt wörter gelöscht werden dann wird die .json nicht darauf geupdatet!
+                    {
+                        //TODO du brauchst noch ne übelste else alter!
+                        auto tempObj = jObj[keyBoolArr].get<std::vector<bool>>(); //WARN <<-- übernimmt die config nicht!
+                        tempObj.resize(item.selectedStates.size(), false); //WARN setzt resize doch alle zurück?
+                        jObj[keyBoolArr] = tempObj; //WARN <<-- schreibt die config nicht, setzt alle elemente auf false!
+                        item.words = jObj[keyCountString].get<std::string>();
+                        break;
+                    }
                 }
             }
         }

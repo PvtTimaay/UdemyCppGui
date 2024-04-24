@@ -37,8 +37,6 @@ struct ImGuiWindowProps
         : title(title), titleClone(titleClone), position(position), size(size), flags(flags), selectedWindow1(false), selectedWindow2(false)
     {
     }
-
-    void ButtonLogic(WindowDataContainer &objC);  //TODO Du brauchst eine methode die da diese xD, logik für die einzelnen ingame buttons implementieren kann
 };
 
 struct VocableButtons
