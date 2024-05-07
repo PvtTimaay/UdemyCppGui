@@ -877,7 +877,7 @@ std::ifstream tempRead(filePath);
                     {
                         //TODO du brauchst noch ne übelste else alter!
                         auto tempObj = jObj[keyBoolArr].get<std::vector<bool>>(); //WARN <<-- übernimmt die config nicht!
-                        tempObj.resize(item.selectedStates.size(), false); //WARN setzt resize doch alle zurück?
+                        tempObj.resize(item.selectedStates.size(), false); //WARN sobald neuer speicher allokiert werden muss werden alle bool auf standard gesetzt!
                         jObj[keyBoolArr] = tempObj; //WARN <<-- schreibt die config nicht, setzt alle elemente auf false!
                         item.words = jObj[keyCountString].get<std::string>();
                         break;
