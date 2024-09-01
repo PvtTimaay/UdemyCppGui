@@ -104,7 +104,7 @@ void takeWordsFromFile (const std::string& filePath, std::vector<std::string>& w
 void takeWordsFromFileObject(WindowDataContainer &objC); //NOTE REFACTORY TEST! //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
 void parseToJsonFuncConfig (WindowDataContainer &objC);
 void parseFromJsonFuncConfig (WindowDataContainer &objC);
-void parseToJsonFuncWords (WindowDataContainer &ObjC);                                       //TODO <<-- erstelle Json dateien zum speichern der words A-Z  und ersetze die .txt dateien
+void parseToJsonFuncWords (WindowDataContainer &objC);                 //NOTE <<-- funktion sollte soweit funktionieren und in allen notwenigen buttons integriert sein (TODO erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien)
 //void parseFromJsonFuncWords ();                                     //TODO <<-- erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien
 void gameVocablesApplyFunction (WindowDataContainer& objC, MenuButtons& objM);
 void gameVocablesAddFunction (WindowDataContainer &objC, MenuButtons &objM);

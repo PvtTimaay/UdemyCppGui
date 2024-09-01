@@ -551,7 +551,7 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
 }
 
 //hilfsfunktion
-void parseToJsonFuncWords (WindowDataContainer &ObjC)
+void parseToJsonFuncWords (WindowDataContainer &objC)
 {
     std::filesystem::path thisPath = std::filesystem::current_path();
     thisPath /= "files";
@@ -572,7 +572,7 @@ void parseToJsonFuncWords (WindowDataContainer &ObjC)
     else
     {
         nlohmann::json jArray = nlohmann::json::array();
-        for(const auto item : ObjC.DropDownWindows)
+        for(const auto item : objC.DropDownWindows)
         {
             nlohmann::json tempJson;
             tempJson [item.AtoZ + " wordsVec "] = item.wordsVec;
@@ -689,6 +689,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             std::fill(std::begin(word1), std::end(word1), 0); //NOTE word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
             parseToJsonFuncConfig(objC); //NOTE ""
+            parseToJsonFuncWords(objC);
         }
         ImGui::PopStyleColor();
 
@@ -747,6 +748,7 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
             parseToJsonFuncConfig(objC); //NOTE ""
+            parseToJsonFuncWords(objC);
         }
         ImGui::End();
     }
