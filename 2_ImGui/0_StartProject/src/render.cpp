@@ -254,6 +254,7 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
             //parseToJsonFuncConfig(objC); //WARN <<-- setzt alle zurueck!
             parseFromJsonFuncConfig(objC); //WARN <<-- setzt alle hier schon zurueck getestet!
             parseToJsonFuncConfig(objC);
+            parseToJsonFuncWords(objC);
             objM.gameVocables = true;
         }
         if (ImGui::Button("Exit", ImVec2(200, 50)))
@@ -545,6 +546,46 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
         if (wordsVec[i].empty() || wordsVecTranslate[i].empty()) {
         std::cerr << "Fehler, leere Eintraege gefunden: Bitte Woerter in .txt ueberpruefen" << std::endl;
         break; //NOTE Schleife abbrechen, da ein Fehler gefunden wurde
+        }
+    }
+}
+
+//hilfsfunktion
+void parseToJsonFuncWords (WindowDataContainer &ObjC)
+{
+    std::filesystem::path thisPath = std::filesystem::current_path();
+    thisPath /= "files";
+    thisPath /= "words.json";
+
+    if(!std::filesystem::exists(thisPath.parent_path()))
+    {
+        std::filesystem::create_directory(thisPath.parent_path());
+    }
+
+    if(!std::filesystem::exists(thisPath))
+    {
+        //Datei erstellen mit leerem Json Objekt
+        std::ofstream outFile(thisPath);
+        outFile << "{}";
+        outFile.close();
+    }
+    else
+    {
+        nlohmann::json jArray = nlohmann::json::array();
+        for(const auto item : ObjC.DropDownWindows)
+        {
+            nlohmann::json tempJson;
+            tempJson [item.AtoZ + " wordsVec "] = item.wordsVec;
+            tempJson [item.AtoZ + " wordsVecTranslate "] = item.wordsVecTranslate;
+            jArray.push_back(tempJson);
+        }
+        nlohmann::json j;
+        j = jArray;
+        std::ofstream jsonWordsFile(thisPath);
+        if(jsonWordsFile.is_open())
+        {
+            jsonWordsFile << j.dump(4);
+            jsonWordsFile.close();
         }
     }
 }
@@ -869,11 +910,11 @@ std::ifstream tempRead(filePath);
                 {
                     if (item.selectedStates.size() == jObj[keyBoolArr].get<std::vector<bool>>().size())
                     {
-                        item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>(); //TODO <<-- item.selectedStates darf nicht verkleinert werden dadurch das config.json weniger Elemente hat als das manuell vergrößerte item.selectedStates in der .txt damit spaeter mit parseToJsonFuncConfig geupdatet werden kann
+                        item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
                         item.words = jObj[keyCountString].get<std::string>();
                         break; // Breche die Suche ab, da das passende Objekt gefunden wurde
                     }
-                    else //NOTE wenn in der .txt wörter gelöscht werden dann wird die .json nicht darauf geupdatet!
+                    else
                     {
                         std::cout << "Error, size of bool-vector must equal to Json-bool-vector\n";
                     }

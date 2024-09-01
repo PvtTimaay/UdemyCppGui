@@ -102,15 +102,14 @@ void RenderVocableWindow (WindowDataContainer &objC, MenuButtons &objM, GameStri
 void saveWordsToFile (const std::vector<std::string>& wordsVec, const std::vector<std::string>& wordsVecTranslate, const std::string& filePath);    //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
 void takeWordsFromFile (const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);   //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
 void takeWordsFromFileObject(WindowDataContainer &objC); //NOTE REFACTORY TEST! //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
-//void deleteWordsInFile()  //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
+void parseToJsonFuncConfig (WindowDataContainer &objC);
+void parseFromJsonFuncConfig (WindowDataContainer &objC);
+void parseToJsonFuncWords (WindowDataContainer &ObjC);                                       //TODO <<-- erstelle Json dateien zum speichern der words A-Z  und ersetze die .txt dateien
+//void parseFromJsonFuncWords ();                                     //TODO <<-- erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien
 void gameVocablesApplyFunction (WindowDataContainer& objC, MenuButtons& objM);
 void gameVocablesAddFunction (WindowDataContainer &objC, MenuButtons &objM);
 void gameStringLoader (WindowDataContainer &objC, GameString &objS);
 void loadToGameFunction (WindowDataContainer &objC, GameString &objS);
-void parseToJsonFuncConfig (WindowDataContainer &objC);
-void parseFromJsonFuncConfig (WindowDataContainer &objC);
-//void parseToJsonFuncWords ();                                       //TODO <<-- erstelle Json dateien zum speichern der words A-Z  und ersetze die .txt dateien
-//void parseFromJsonFuncWords ();                                     //TODO <<-- erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien
 void buttonLogic (WindowDataContainer &objC, GameString &objS);
 void newKeyValue (WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "Hurra"
 void wrongKeyValue (WindowDataContainer &objC, GameString &objS); //TODO <<-- function for "wrong"
