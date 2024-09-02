@@ -251,9 +251,10 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         {
             //Vokabeln-Logik
             //takeWordsFromFileObject(objC); //TODO wenn man woerter manuell in die .txt eintraegt müssen diese richtig in die string vectoren und .json datei geupdatet werden
-            //parseToJsonFunc(objC); //WARN <<-- setzt alle zurueck!
-            parseFromJsonFunc(objC); //WARN <<-- setzt alle hier schon zurueck getestet!
-            parseToJsonFunc(objC);
+            //parseToJsonFuncConfig(objC); //WARN <<-- setzt alle zurueck!
+            parseFromJsonFuncConfig(objC); //WARN <<-- setzt alle hier schon zurueck getestet!
+            parseToJsonFuncConfig(objC);
+            parseToJsonFuncWords(objC);
             objM.gameVocables = true;
         }
         if (ImGui::Button("Exit", ImVec2(200, 50)))
@@ -356,7 +357,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             objM.gameVocables = false;
             gameStringLoader(objC, objS);     //NOTE String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
             loadToGameFunction(objC, objS); //NOTE Funktion die strings aus GameString Struktur ins Spiel läd
-            parseToJsonFunc(objC);          //NOTE Alle ausgewaehlten/abgewaehlten elemente/widgets der selectable fenster in .json datei speichern
+            parseToJsonFuncConfig(objC);          //NOTE Alle ausgewaehlten/abgewaehlten elemente/widgets der selectable fenster in .json datei speichern
         }
 
         /*ImGui::SetCursorPos(ImVec2(750, 100)); //WARN #1 funktioniert nicht richtig da alle ImGui::BeginCombo aktualisiert werden müssen um selectedCount zu aktualisieren indem man sie alle einzeln anklickt
@@ -549,6 +550,46 @@ void takeWordsFromFile(const std::string& filePath, std::vector<std::string>& wo
     }
 }
 
+//hilfsfunktion
+void parseToJsonFuncWords (WindowDataContainer &objC)
+{
+    std::filesystem::path thisPath = std::filesystem::current_path();
+    thisPath /= "files";
+    thisPath /= "words.json";
+
+    if(!std::filesystem::exists(thisPath.parent_path()))
+    {
+        std::filesystem::create_directory(thisPath.parent_path());
+    }
+
+    if(!std::filesystem::exists(thisPath))
+    {
+        //Datei erstellen mit leerem Json Objekt
+        std::ofstream outFile(thisPath);
+        outFile << "{}";
+        outFile.close();
+    }
+    else
+    {
+        nlohmann::json jArray = nlohmann::json::array();
+        for(const auto item : objC.DropDownWindows)
+        {
+            nlohmann::json tempJson;
+            tempJson [item.AtoZ + " wordsVec "] = item.wordsVec;
+            tempJson [item.AtoZ + " wordsVecTranslate "] = item.wordsVecTranslate;
+            jArray.push_back(tempJson);
+        }
+        nlohmann::json j;
+        j = jArray;
+        std::ofstream jsonWordsFile(thisPath);
+        if(jsonWordsFile.is_open())
+        {
+            jsonWordsFile << j.dump(4);
+            jsonWordsFile.close();
+        }
+    }
+}
+
 //render.cpp
 //hilfsfunktion
 void gameVocablesApplyFunction(WindowDataContainer& objC, MenuButtons& objM)
@@ -647,7 +688,8 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             }
             std::fill(std::begin(word1), std::end(word1), 0); //NOTE word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
-            parseToJsonFunc(objC); //NOTE ""
+            parseToJsonFuncConfig(objC); //NOTE ""
+            parseToJsonFuncWords(objC);
         }
         ImGui::PopStyleColor();
 
@@ -705,7 +747,8 @@ void gameVocablesAddFunction(WindowDataContainer &objC, MenuButtons & objM)
             }
             std::fill(std::begin(word1), std::end(word1), 0); // word1 wieder leeren
             objM.gameVocablesOpenAddWindow = false;
-            parseToJsonFunc(objC); //NOTE ""
+            parseToJsonFuncConfig(objC); //NOTE ""
+            parseToJsonFuncWords(objC);
         }
         ImGui::End();
     }
@@ -806,7 +849,7 @@ void loadToGameFunction(WindowDataContainer &objC, GameString &objS)
 }
 
 //hilfsfunktion
-void parseToJsonFunc(WindowDataContainer &objC)
+void parseToJsonFuncConfig(WindowDataContainer &objC)
 {
     auto filePath = std::filesystem::current_path();
     filePath /= "files";
@@ -839,7 +882,7 @@ void parseToJsonFunc(WindowDataContainer &objC)
 }
 
 //hilfsfunktion
-void parseFromJsonFunc(WindowDataContainer &objC)
+void parseFromJsonFuncConfig(WindowDataContainer &objC)
 {
     auto filePath = std::filesystem::current_path();
     filePath /= "files";
@@ -867,20 +910,15 @@ std::ifstream tempRead(filePath);
             {
                 if (jObj.contains(keyBoolArr) && jObj.contains(keyCountString))
                 {
-                    if (item.selectedStates.size() <= jObj[keyBoolArr].get<std::vector<bool>>().size())
+                    if (item.selectedStates.size() == jObj[keyBoolArr].get<std::vector<bool>>().size())
                     {
-                        item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>(); //TODO <<-- item.selectedStates darf nicht verkleinert werden dadurch das config.json weniger Elemente hat als das manuell vergrößerte item.selectedStates in der .txt damit spaeter mit parseToJsonFunc geupdatet werden kann
+                        item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
                         item.words = jObj[keyCountString].get<std::string>();
                         break; // Breche die Suche ab, da das passende Objekt gefunden wurde
                     }
-                    else //TODO wenn in der .txt wörter gelöscht werden dann wird die .json nicht darauf geupdatet!
+                    else
                     {
-                        //TODO du brauchst noch ne übelste else alter!
-                        auto tempObj = jObj[keyBoolArr].get<std::vector<bool>>(); //WARN <<-- übernimmt die config nicht!
-                        tempObj.resize(item.selectedStates.size(), false); //WARN sobald neuer speicher allokiert werden muss werden alle bool auf standard gesetzt!
-                        jObj[keyBoolArr] = tempObj; //WARN <<-- schreibt die config nicht, setzt alle elemente auf false!
-                        item.words = jObj[keyCountString].get<std::string>();
-                        break;
+                        std::cout << "Error, size of bool-vector must equal to Json-bool-vector\n";
                     }
                 }
             }
