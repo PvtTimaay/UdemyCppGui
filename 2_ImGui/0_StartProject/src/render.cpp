@@ -575,8 +575,8 @@ void parseToJsonFuncWords (WindowDataContainer &objC)
         for(const auto item : objC.DropDownWindows)
         {
             nlohmann::json tempJson;
-            tempJson [item.AtoZ + " wordsVec "] = item.wordsVec;
-            tempJson [item.AtoZ + " wordsVecTranslate "] = item.wordsVecTranslate;
+            tempJson [item.AtoZ + " wordsVec"] = item.wordsVec;
+            tempJson [item.AtoZ + " wordsVecTranslate"] = item.wordsVecTranslate;
             jArray.push_back(tempJson);
         }
         nlohmann::json j;
@@ -586,6 +586,85 @@ void parseToJsonFuncWords (WindowDataContainer &objC)
         {
             jsonWordsFile << j.dump(4);
             jsonWordsFile.close();
+        }
+    }
+}
+
+//hilfsfunktion
+void parseFromJsonFuncWords (WindowDataContainer &objC)
+{
+    std::filesystem::path thisPathWords = std::filesystem::current_path();
+    std::filesystem::path thisPathConfig = std::filesystem::current_path();
+    thisPathWords /= "files";
+    thisPathWords /= "words.json";
+    thisPathConfig /= "files";
+    thisPathConfig /= "config.json";
+
+    if (!std::filesystem::exists(thisPathWords.parent_path()))
+    {
+        std::filesystem::create_directory(thisPathWords.parent_path());
+    }
+
+    if (!std::filesystem::exists(thisPathWords))
+    {
+        std::ofstream outFile(thisPathWords);
+        outFile << "{}";
+        outFile.close();
+    }
+    else
+    {
+        std::ifstream inFile(thisPathWords);
+        nlohmann::json jsonData;
+        inFile >> jsonData;
+        inFile.close();
+
+        for (auto &item : objC.DropDownWindows)
+        {
+            if (jsonData.contains(item.AtoZ + " wordsVec") && jsonData.contains(item.AtoZ + " wordsVecTranslate"))
+            {
+                for (const auto &word : jsonData[item.AtoZ + " wordsVec"])
+                {
+                    item.wordsVec.push_back(word.get<std::string>());
+                }
+
+                for (const auto &wordTranslate : jsonData[item.AtoZ + " wordsVecTranslate"])
+                {
+                    item.wordsVecTranslate.push_back(wordTranslate.get<std::string>());
+                }
+            }
+        }
+    }
+
+    if (!std::filesystem::exists(thisPathConfig.parent_path()))
+    {
+        std::filesystem::create_directory(thisPathConfig.parent_path());
+    }
+    if (!std::filesystem::exists(thisPathConfig))
+    {
+        std::ofstream outFile(thisPathConfig);
+        outFile << "{}";
+        outFile.close();
+    }
+    else
+    {
+        std::ifstream inFile(thisPathConfig);
+        nlohmann::json jsonData;
+        inFile >> jsonData;
+        inFile.close();
+
+        for (auto &item : objC.DropDownWindows)
+        {
+            if (jsonData.contains("bool_values" + item.title) && jsonData.contains("selectedCount")) //TODO <<-- der selectedCount muss noch in der config.json so geaendert werden dass jeder einzelne einen title bekommt sonst heissen alle gleich das ist schlecht
+            {
+                for (const auto &boolValues : jsonData["bool_values" + item.title])
+                {
+                    item.selectedStates.push_back(boolValues.get<bool>());
+                }
+                for (const auto &selectedCount : jsonData["selectedCount"])
+                {
+                    item.words = selectedCount.get<std::string>();
+                }
+            }
         }
     }
 }
