@@ -218,11 +218,24 @@ for (auto &winProps : DropDownWindows)
         winProps.addWord("Erbse", "Pea");*/
 
            //saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);
-           takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
+           //takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
+
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
                 std::cout << winProps.wordsVec[i] << " ";
             }
+
+            std::cout << '\n\n';
+
+            parseFromJsonFuncWords(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
+            parseFromJsonFuncConfig(winProps.title, winProps.words, winProps.selectedStates);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
+
+            for (size_t i = 0; i < winProps.wordsVec.size(); i++)
+            {
+                std::cout << winProps.wordsVec[i] << " ";
+            }
+
+            std::cout << '\n\n';
     }
 }
 
@@ -251,8 +264,6 @@ void RenderMenuWindow(WindowDataContainer &objC, MenuButtons &objM, GameString &
         {
             //Vokabeln-Logik
             //takeWordsFromFileObject(objC); //TODO wenn man woerter manuell in die .txt eintraegt müssen diese richtig in die string vectoren und .json datei geupdatet werden
-            //parseToJsonFuncConfig(objC); //WARN <<-- setzt alle zurueck!
-            parseFromJsonFuncConfig(objC); //WARN <<-- setzt alle hier schon zurueck getestet!
             parseToJsonFuncConfig(objC);
             parseToJsonFuncWords(objC);
             objM.gameVocables = true;
@@ -591,14 +602,12 @@ void parseToJsonFuncWords (WindowDataContainer &objC)
 }
 
 //hilfsfunktion
-void parseFromJsonFuncWords (WindowDataContainer &objC)
+void parseFromJsonFuncWords (const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate)
 {
     std::filesystem::path thisPathWords = std::filesystem::current_path();
-    std::filesystem::path thisPathConfig = std::filesystem::current_path();
     thisPathWords /= "files";
     thisPathWords /= "words.json";
-    thisPathConfig /= "files";
-    thisPathConfig /= "config.json";
+    std::string keyBeginning = filePath;
 
     if (!std::filesystem::exists(thisPathWords.parent_path()))
     {
@@ -607,9 +616,8 @@ void parseFromJsonFuncWords (WindowDataContainer &objC)
 
     if (!std::filesystem::exists(thisPathWords))
     {
-        std::ofstream outFile(thisPathWords);
-        outFile << "{}";
-        outFile.close();
+        std::cout << "words.json not even exists!\n";
+        return;
     }
     else
     {
@@ -618,54 +626,19 @@ void parseFromJsonFuncWords (WindowDataContainer &objC)
         inFile >> jsonData;
         inFile.close();
 
-        for (auto &item : objC.DropDownWindows)
-        {
-            if (jsonData.contains(item.AtoZ + " wordsVec") && jsonData.contains(item.AtoZ + " wordsVecTranslate"))
+            if (jsonData.contains(keyBeginning + " wordsVec") && jsonData.contains(keyBeginning + " wordsVecTranslate"))
             {
-                for (const auto &word : jsonData[item.AtoZ + " wordsVec"])
+                for (const auto &word : jsonData[keyBeginning + " wordsVec"])
                 {
-                    item.wordsVec.push_back(word.get<std::string>());
+                    wordsVec.push_back(word.get<std::string>());
                 }
 
-                for (const auto &wordTranslate : jsonData[item.AtoZ + " wordsVecTranslate"])
+                for (const auto &wordTranslate : jsonData[keyBeginning + " wordsVecTranslate"])
                 {
-                    item.wordsVecTranslate.push_back(wordTranslate.get<std::string>());
+                    wordsVecTranslate.push_back(wordTranslate.get<std::string>());
                 }
             }
-        }
-    }
 
-    if (!std::filesystem::exists(thisPathConfig.parent_path()))
-    {
-        std::filesystem::create_directory(thisPathConfig.parent_path());
-    }
-    if (!std::filesystem::exists(thisPathConfig))
-    {
-        std::ofstream outFile(thisPathConfig);
-        outFile << "{}";
-        outFile.close();
-    }
-    else
-    {
-        std::ifstream inFile(thisPathConfig);
-        nlohmann::json jsonData;
-        inFile >> jsonData;
-        inFile.close();
-
-        for (auto &item : objC.DropDownWindows)
-        {
-            if (jsonData.contains("bool_values" + item.title) && jsonData.contains("selectedCount")) //TODO <<-- der selectedCount muss noch in der config.json so geaendert werden dass jeder einzelne einen title bekommt sonst heissen alle gleich das ist schlecht
-            {
-                for (const auto &boolValues : jsonData["bool_values" + item.title])
-                {
-                    item.selectedStates.push_back(boolValues.get<bool>());
-                }
-                for (const auto &selectedCount : jsonData["selectedCount"])
-                {
-                    item.words = selectedCount.get<std::string>();
-                }
-            }
-        }
     }
 }
 
@@ -945,7 +918,7 @@ void parseToJsonFuncConfig(WindowDataContainer &objC)
     {
         nlohmann::json tempJson;
         tempJson ["bool_values" + item.title] = item.selectedStates;
-        tempJson ["selectedCount"] = item.words;
+        tempJson ["selectedCount" + item.title] = item.words;
         jArray.push_back(tempJson);
     }
 
@@ -961,47 +934,38 @@ void parseToJsonFuncConfig(WindowDataContainer &objC)
 }
 
 //hilfsfunktion
-void parseFromJsonFuncConfig(WindowDataContainer &objC)
+void parseFromJsonFuncConfig(const std::string &key, std::string &words, std::vector<bool> &selectedStates)
 {
-    auto filePath = std::filesystem::current_path();
-    filePath /= "files";
-    filePath /= "config.json";
+    auto thisPath = std::filesystem::current_path();
+    thisPath /= "files";
+    thisPath /= "config.json";
 
-    if (!std::filesystem::exists(filePath))
+    if (!std::filesystem::exists(thisPath))
     {
         std::cerr << "Error, not found config.json\n";
         return;
     }
 
-std::ifstream tempRead(filePath);
+    std::ifstream tempRead(thisPath);
+
     if (tempRead.is_open())
     {
-        nlohmann::json jArray;
-        tempRead >> jArray; // Lese das Array von JSON-Objekten
+        nlohmann::json jObj;
+        tempRead >> jObj; // Lese das Array von JSON-Objekten
 
-        for (auto &item : objC.DropDownWindows)
-        {
-            std::string keyBoolArr = "bool_values" + item.title;
-            std::string keyCountString = "selectedCount";
+            std::string keyBoolArr = "bool_values" + key;
+            std::string keyCountString = "selectedCount" + key;
 
-            // Suche das passende JSON-Objekt basierend auf dem Schlüssel
-            for (auto &jObj : jArray)
-            {
                 if (jObj.contains(keyBoolArr) && jObj.contains(keyCountString))
                 {
-                    if (item.selectedStates.size() == jObj[keyBoolArr].get<std::vector<bool>>().size())
-                    {
-                        item.selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
-                        item.words = jObj[keyCountString].get<std::string>();
-                        break; // Breche die Suche ab, da das passende Objekt gefunden wurde
-                    }
-                    else
-                    {
-                        std::cout << "Error, size of bool-vector must equal to Json-bool-vector\n";
-                    }
+                        selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
+                        words = jObj[keyCountString].get<std::string>();
                 }
-            }
-        }
+                else
+                {
+                    std::cout << "Error, json file doesnt contains the keywords!\n";
+                    return;
+                }
 
         tempRead.close();
     }

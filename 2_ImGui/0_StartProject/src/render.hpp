@@ -103,9 +103,9 @@ void saveWordsToFile (const std::vector<std::string>& wordsVec, const std::vecto
 void takeWordsFromFile (const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate, std::vector<bool>& selectedStates);   //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
 void takeWordsFromFileObject(WindowDataContainer &objC); //NOTE REFACTORY TEST! //NOTE <<-- Sollen durch Json Dateien ersetzt werden siehe parseToJsonFuncWords und parseFromJsonFuncWords
 void parseToJsonFuncConfig (WindowDataContainer &objC);
-void parseFromJsonFuncConfig (WindowDataContainer &objC);
+void parseFromJsonFuncConfig (const std::string &key, std::string &words, std::vector<bool> &selectedStates);
 void parseToJsonFuncWords (WindowDataContainer &objC);                 //NOTE <<-- funktion sollte soweit funktionieren und in allen notwenigen buttons integriert sein (TODO erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien)
-//void parseFromJsonFuncWords ();                                     //TODO <<-- erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien
+void parseFromJsonFuncWords (const std::string& filePath, std::vector<std::string>& wordsVec, std::vector<std::string>& wordsVecTranslate);                                     //TODO <<-- erstelle Json dateien zum speichern der words A-Z und ersetze die .txt dateien
 void gameVocablesApplyFunction (WindowDataContainer& objC, MenuButtons& objM);
 void gameVocablesAddFunction (WindowDataContainer &objC, MenuButtons &objM);
 void gameStringLoader (WindowDataContainer &objC, GameString &objS);

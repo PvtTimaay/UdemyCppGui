@@ -60,6 +60,7 @@ int main()
     GameString GameStringObj1; //TODO implementiere eine neue Structur die die daten aus ChoosedWords.txt in ein std::map sichert
 
 
+
     // Haupt-Render-Schleife
     while (!glfwWindowShouldClose(window))
     {
