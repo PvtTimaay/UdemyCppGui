@@ -366,7 +366,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             objM.gameVocablesApplyFunc = true;
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
-            gameStringLoader(objC, objS);     //NOTE String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
+            gameStringLoader(objC, objS);     //NOTE String lade Funktion, ab hier werden die choosedWords.txt strings in die GameString geladen
             loadToGameFunction(objC, objS); //NOTE Funktion die strings aus GameString Struktur ins Spiel läd
             parseToJsonFuncConfig(objC);          //NOTE Alle ausgewaehlten/abgewaehlten elemente/widgets der selectable fenster in .json datei speichern
         }
