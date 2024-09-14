@@ -230,7 +230,6 @@ for (auto &winProps : DropDownWindows)
 
             parseFromJsonFuncWords(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate);
             parseFromJsonFuncConfig(winProps.title, winProps.words, winProps.selectedStates);
->>>>>>> f3adff024d5d9b12df2caecc1699e1307de4a670
 
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
