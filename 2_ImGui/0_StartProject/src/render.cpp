@@ -227,8 +227,10 @@ for (auto &winProps : DropDownWindows)
 
             std::cout << '\n\n';
 
-            //parseFromJsonFuncWords(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
-            //parseFromJsonFuncConfig(winProps.title, winProps.words, winProps.selectedStates);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
+
+            parseFromJsonFuncWords(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate);
+            parseFromJsonFuncConfig(winProps.title, winProps.words, winProps.selectedStates);
+>>>>>>> f3adff024d5d9b12df2caecc1699e1307de4a670
 
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
@@ -366,7 +368,7 @@ void RenderVocableWindow(WindowDataContainer &objC, MenuButtons &objM, GameStrin
             objM.gameVocablesApplyFunc = true;
             objM.ZurueckMenue = true;
             objM.gameVocables = false;
-            gameStringLoader(objC, objS);     //NOTE String lade Funktion ab hier werden die choosedWords.txt strings in die GameString geladen
+            gameStringLoader(objC, objS);     //NOTE String lade Funktion, ab hier werden die choosedWords.txt strings in die GameString geladen
             loadToGameFunction(objC, objS); //NOTE Funktion die strings aus GameString Struktur ins Spiel läd
             parseToJsonFuncConfig(objC);          //NOTE Alle ausgewaehlten/abgewaehlten elemente/widgets der selectable fenster in .json datei speichern
         }
@@ -626,19 +628,23 @@ void parseFromJsonFuncWords (const std::string& filePath, std::vector<std::strin
         inFile >> jsonData;
         inFile.close();
 
-            if (jsonData.contains(keyBeginning + " wordsVec") && jsonData.contains(keyBeginning + " wordsVecTranslate"))
+        for (const auto &entry : jsonData)
+        {
+
+            if (entry.contains(keyBeginning + " wordsVec") && entry.contains(keyBeginning + " wordsVecTranslate"))
             {
-                for (const auto &word : jsonData[keyBeginning + " wordsVec"])
-                {
-                    wordsVec.push_back(word.get<std::string>());
-                }
+                //einlesen in die std::vectoren
+                    wordsVec = entry[keyBeginning + " wordsVec"].get<std::vector<std::string>>();
+                    wordsVecTranslate = entry[keyBeginning + " wordsVecTranslate"].get<std::vector<std::string>>();
 
-                for (const auto &wordTranslate : jsonData[keyBeginning + " wordsVecTranslate"])
-                {
-                    wordsVecTranslate.push_back(wordTranslate.get<std::string>());
-                }
+                    std::cout << "words.json key successfull found in " << filePath << std::endl;
+                    return;
             }
-
+            else
+            {
+                    std::cerr << "Error, json keys not found, please check the words.json file\n\n";
+            }
+        }
     }
 }
 
@@ -956,22 +962,23 @@ void parseFromJsonFuncConfig(const std::string &key, std::string &words, std::ve
             std::string keyBoolArr = "bool_values" + key;
             std::string keyCountString = "selectedCount" + key;
 
-                if (jObj.contains(keyBoolArr) && jObj.contains(keyCountString))
+            for (const auto &entry : jObj)
+            {
+                if (entry.contains(keyBoolArr) && entry.contains(keyCountString))
                 {
-                        selectedStates = jObj[keyBoolArr].get<std::vector<bool>>();
-                        words = jObj[keyCountString].get<std::string>();
+                        selectedStates = entry[keyBoolArr].get<std::vector<bool>>();
+                        words = entry[keyCountString].get<std::string>();
+
+                        std::cout << "config.json keys successfull found in " << key << std::endl;
+                        return;
                 }
                 else
                 {
-                    std::cout << "Error, json file doesnt contains the keywords!\n";
-                    return;
+                        std::cerr << "Error, json file doesnt contains the keywords!\n";
                 }
+            }
 
         tempRead.close();
-    }
-    else
-    {
-        std::cerr << "Error opening config.json\n";
     }
 }
 
