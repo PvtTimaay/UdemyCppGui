@@ -218,7 +218,7 @@ for (auto &winProps : DropDownWindows)
         winProps.addWord("Erbse", "Pea");*/
 
            //saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);
-           //takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
+           takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
 
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
@@ -227,8 +227,8 @@ for (auto &winProps : DropDownWindows)
 
             std::cout << '\n\n';
 
-            parseFromJsonFuncWords(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
-            parseFromJsonFuncConfig(winProps.title, winProps.words, winProps.selectedStates);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
+            //parseFromJsonFuncWords(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
+            //parseFromJsonFuncConfig(winProps.title, winProps.words, winProps.selectedStates);   //TODO <<-- diese laden irgendwie nicht die vectoren beim programmstart auf mit den daten aus den json files aber warum nicht?
 
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
