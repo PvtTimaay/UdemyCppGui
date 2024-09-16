@@ -218,7 +218,7 @@ for (auto &winProps : DropDownWindows)
         winProps.addWord("Erbse", "Pea");*/
 
            //saveWordsToFile(winProps.wordsVec, winProps.wordsVecTranslate, winProps.AtoZ);
-           takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
+           //takeWordsFromFile(winProps.AtoZ, winProps.wordsVec, winProps.wordsVecTranslate, winProps.selectedStates);
 
             for (size_t i = 0; i < winProps.wordsVec.size(); i++)
             {
